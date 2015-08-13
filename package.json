@@ -1,0 +1,46 @@
+{
+  "name": "request-next",
+  "version": "0.0.0",
+  "description": "HTTP Client Library",
+
+  "keywords": [
+    "http",
+    "https",
+    "client"
+  ],
+
+  "license": "MIT",
+  "homepage": "https://github.com/simov/request-next",
+
+  "author": "Simeon Velichkov <simeonvelichkov@gmail.com> (http://simov.github.io)",
+
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/simov/request-next.git"
+  },
+
+  "bundledDependencies": {
+    "http-duplex"     : "0.0.0"
+  },
+
+  "devDependencies": {
+    "mocha"           : "2.2.4",
+    "should"          : "5.2.0",
+    "istanbul"        : "0.3.13",
+    "coveralls"       : "2.11.2",
+    "codecov.io"      : "0.1.5",
+    "eslint"          : "0.19.0"
+  },
+
+  "main": "index.js",
+
+  "files": [],
+
+  "scripts": {
+    "test"      : "npm run lint-lib && npm run lint-test && npm run test-ci",
+    "test-ci"   : "major=$(node --version | cut -b 2-2) && minor=$(node --version | cut -b 4-5) && if [ $major -eq 0 ] && [ $minor -ge 12 ]; then mocha --harmony --recursive test/; elif [ $major -ge 1 ]; then mocha --recursive test/; else mocha test/ test/flow/ test/consumer/express/ test/consumer/hapi/; fi",
+    "test-cov"  : "istanbul cover _mocha test/ test/flow/ test/consumer/express/ test/consumer/hapi/",
+    "lint-lib"  : "eslint lib/ && echo Lint lib passed",
+    "lint-test" : "eslint --config test/.eslintrc test/ && echo Lint test passed"
+  }
+}
