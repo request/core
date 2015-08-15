@@ -5,12 +5,11 @@ var fs = require('fs')
   , path = require('path')
   , http = require('http')
   , iconv = require('iconv-lite')
-var Request = require('./index')
+var request = require('./index')
 
 
 var server = http.createServer()
 server.on('request', function (req, res) {
-  console.log(req.headers)
   res.writeHead(200, {})
   // ISO-8859-1
   // transfer the characters with wrong encoding
@@ -21,11 +20,9 @@ server.listen(6767)
 
 var examples = {
   0: function () {
-    var request = new Request({
-      url: 'http://localhost:6767'
-    })
-    // regular http options
-    request.start({
+    // regular http options (except protocol)
+    var req = request({
+      protocol: 'http:',
       method: 'GET',
       host: 'localhost',
       port: 6767,
@@ -34,17 +31,14 @@ var examples = {
         'transfer-encoding': 'chunked'
       }
     })
+    req.on('response', function (res) {
+      // probably should detect the content encoding somehow
+      req._res = res.pipe(iconv.decodeStream('ISO-8859-1'))
+    })
 
-    request
-      .on('response', function (res) {
-        console.log('res')
-        // probably should detect the content encoding somehow
+    req.pipe(process.stdout)
 
-        request._res = res.pipe(iconv.decodeStream('ISO-8859-1'))
-      })
-      .pipe(process.stdout)
-
-    request.end()
+    req.end()
   }
 }
 
