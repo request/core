@@ -10,17 +10,24 @@ var request = require('./index')
 
 var server = http.createServer()
 server.on('request', function (req, res) {
-  req.pipe(res)
+  if (req.headers['accept'] === 'text/plain') {
+    res.end('poop')
+  } else {
+    req.pipe(res)
+  }
 })
 server.listen(6767)
 
 
-var examples = {
-  0: function () {
-    var input = fs.createReadStream(path.join(__dirname, 'fixtures/cat.png'))
-      , output = path.join(__dirname, 'tmp/cat2.png')
+var input = fs.createReadStream(path.join(__dirname, 'fixtures/cat.png'))
+  , output = path.join(__dirname, 'tmp/cat2.png')
 
-    // regular http options (except protocol)
+var examples = {
+
+  // buffer externally
+  0: function () {
+    // regular http options
+    // except: protocol
     var req = request({
       protocol: 'http:',
       method: 'GET',
@@ -45,6 +52,51 @@ var examples = {
 
     input
       .pipe(req)
+  },
+
+  // buffer using buffer-response module
+  1: function () {
+    // regular http options
+    // except: protocol, encoding, callback
+    var req = request({
+      protocol: 'http:',
+      method: 'GET',
+      host: 'localhost',
+      port: 6767,
+      path: '/',
+      headers: {
+        'transfer-encoding': 'chunked'
+      },
+      encoding: 'binary',
+      callback: function (err, res, body) {
+        fs.writeFileSync(output, body)
+      }
+    })
+
+    input
+      .pipe(req)
+  },
+
+  // buffer string using buffer-response module
+  2: function () {
+    // regular http options
+    // except: protocol, encoding, callback
+    var req = request({
+      protocol: 'http:',
+      method: 'GET',
+      host: 'localhost',
+      port: 6767,
+      path: '/',
+      headers: {
+        'accept': 'text/plain',
+        'transfer-encoding': 'chunked'
+      },
+      callback: function (err, res, body) {
+        console.log(body)
+      }
+    })
+
+    req.end()
   }
 }
 
