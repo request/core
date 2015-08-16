@@ -16,12 +16,37 @@ server.on('request', function (req, res) {
 server.listen(6767)
 
 
-var examples = {
-  0: function () {
-    var input = fs.createReadStream(path.join(__dirname, 'fixtures/cat.png'))
-      , output = fs.createWriteStream(path.join(__dirname, 'tmp/cat2.png'))
+var input = fs.createReadStream(path.join(__dirname, 'fixtures/cat.png'))
+  , output = fs.createWriteStream(path.join(__dirname, 'tmp/cat2.png'))
 
-    // regular http options (except protocol)
+var examples = {
+
+  // piping it externally
+  0: function () {
+    // regular http options
+    // except: protocol
+    var req = request({
+      protocol: 'http:',
+      method: 'GET',
+      host: 'localhost',
+      port: 6767,
+      path: '/',
+      headers: {
+        'transfer-encoding': 'chunked',
+        'accept-encoding': 'gzip,deflate'
+      }
+    })
+
+    input
+      .pipe(req)
+      .pipe(zlib.createInflate())
+      .pipe(output)
+  },
+
+  // piping it using external on.response event
+  1: function () {
+    // regular http options
+    // except: protocol
     var req = request({
       protocol: 'http:',
       method: 'GET',
@@ -46,8 +71,28 @@ var examples = {
 
     input
       .pipe(req)
-      // piping it externally
-      // .pipe(zlib.createInflate())
+      .pipe(output)
+  },
+
+  // piping it using the gzip-stream module
+  2: function () {
+    // regular http options
+    // except: protocol, gzip
+    var req = request({
+      protocol: 'http:',
+      method: 'GET',
+      host: 'localhost',
+      port: 6767,
+      path: '/',
+      headers: {
+        'transfer-encoding': 'chunked',
+        'accept-encoding': 'gzip,deflate'
+      },
+      gzip: true
+    })
+
+    input
+      .pipe(req)
       .pipe(output)
   }
 }
