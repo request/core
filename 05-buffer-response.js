@@ -95,8 +95,6 @@ var examples = {
         console.log(body)
       }
     })
-
-    req.end()
   }
 }
 

@@ -84,7 +84,6 @@ var examples = {
 
     req.pipe(process.stdout)
 
-    req.end()
   }
 }
 

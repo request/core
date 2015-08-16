@@ -68,6 +68,10 @@ function request (options) {
     })
   }
 
+  process.nextTick(function () {
+    req.end()
+  })
+
   req.start(options)
   return req
 }
