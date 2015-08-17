@@ -83,7 +83,6 @@ var examples = {
     })
 
     req.pipe(process.stdout)
-
   }
 }
 

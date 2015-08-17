@@ -68,8 +68,15 @@ function request (options) {
     })
   }
 
+  var piped = false
+  req.on('pipe', function (src) {
+    piped = true
+  })
+
   process.nextTick(function () {
-    req.end()
+    if (!piped) {
+      req.end()
+    }
   })
 
   req.start(options)
