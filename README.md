@@ -12,6 +12,8 @@
   - `_chunk`
   - `_src`
 
+  - `start` - method
+
 - **res**
   - `_headers`
 
@@ -21,8 +23,8 @@
 - **url/uri**
   - `https://site.com`
 - **protocol**
-  - `http:`
-  - `https:`
+  - `http`
+  - `https`
 - **gzip** pipes the response body to [zlib][zlib] Inflate or Gunzip stream
   - `true` detects the compression method from the `content-encoding` header
   - `deflate/gzip` user defined compression method to use
