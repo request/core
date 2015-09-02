@@ -4,6 +4,7 @@ var fs = require('fs')
   , http = require('http')
   , zlib = require('zlib')
 var should = require('should')
+  , debug = require('debug')
 var request = require('../index')
 
 var image = path.join(__dirname, '../fixtures/cat.png')
@@ -53,12 +54,10 @@ describe('stream file', function () {
       .pipe(req)
       .pipe(output)
 
-    req.on('end', function () {
-      setTimeout(function () {
-        var stats = fs.statSync(image2)
-        stats.size.should.equal(22025)
-        done()
-      }, 0)
+    output.on('close', function () {
+      var stats = fs.statSync(image2)
+      stats.size.should.equal(22025)
+      done()
     })
   })
 
@@ -113,7 +112,7 @@ describe('gzip stream file', function () {
       .pipe(req)
       .pipe(output)
 
-    req.on('end', function () {
+    output.on('close', function () {
       var stats = fs.statSync(image2)
       stats.size.should.equal(22025)
       done()
