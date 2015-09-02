@@ -6,8 +6,8 @@ var should = require('should')
   , debug = require('debug')
 var request = require('../index')
 
-var image = path.join(__dirname, '../fixtures/cat.png')
-  , image2 = path.join(__dirname, '../tmp/cat2.png')
+var image = path.join(__dirname, './fixtures/cat.png')
+  , image2 = path.join(__dirname, './tmp/cat2.png')
 
 console.debug = debug('server')
 
