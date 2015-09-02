@@ -2,15 +2,15 @@
 ## Properties
 
 - **HTTPDuplex**
-  - `_url`
+  - `_url` url.parse(options.url)
 
-  - `_req`
-  - `_res`
-  - `_client`
+  - `_req` http.ClientRequest created in HTTPDuplex
+  - `_res` http.IncomingMessage created in HTTPDuplex
+  - `_client` http or https module
 
-  - `_redirect`
-  - `_chunk`
-  - `_src`
+  - `_redirect` boolean indicating that the client is going to be redirected
+  - `_src` the input read stream, usually from pipe
+  - `_chunk` the first chunk read from the input read stream
 
   - `start` - method
 
