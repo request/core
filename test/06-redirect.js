@@ -10,6 +10,8 @@ var request = require('../index')
 var image = path.join(__dirname, '../fixtures/cat.png')
   , image2 = path.join(__dirname, '../tmp/cat2.png')
 
+console.debug = debug('server')
+
 
 describe('stream file', function () {
   var server
@@ -17,13 +19,13 @@ describe('stream file', function () {
     server = http.createServer()
     server.on('request', function (req, res) {
       if (req.url === '/redirect') {
-        console.log('redirect')
+        console.debug('redirect')
         res.writeHead(301, {'location': '/'})
         res.end()
       } else {
-        console.log('send')
+        console.debug('send')
         req.on('data', function (data) {
-          console.log('write')
+          console.debug('write')
         })
         req.pipe(res)
       }
@@ -72,13 +74,13 @@ describe('gzip stream file', function () {
     server = http.createServer()
     server.on('request', function (req, res) {
       if (req.url === '/redirect') {
-        console.log('redirect')
+        console.debug('redirect')
         res.writeHead(301, {'location': '/'})
         res.end()
       } else {
-        console.log('send')
+        console.debug('send')
         req.on('data', function (data) {
-          console.log('write')
+          console.debug('write')
         })
         res.writeHead(200, {'content-encoding': 'deflate'})
         req.pipe(zlib.createDeflate()).pipe(res)
@@ -130,13 +132,13 @@ describe('stream file callback', function () {
     server = http.createServer()
     server.on('request', function (req, res) {
       if (req.url === '/redirect') {
-        console.log('redirect')
+        console.debug('redirect')
         res.writeHead(301, {'location': '/'})
         res.end()
       } else {
-        console.log('send')
+        console.debug('send')
         req.on('data', function (data) {
-          console.log('write')
+          console.debug('write')
         })
         req.pipe(res)
       }
@@ -184,16 +186,16 @@ describe('stream file without pipe', function () {
     server = http.createServer()
     server.on('request', function (req, res) {
       if (req.url === '/redirect') {
-        console.log('redirect')
+        console.debug('redirect')
         res.writeHead(301, {'location': '/'})
         res.end()
       } else {
-        console.log('send')
+        console.debug('send')
         var input = fs.createReadStream(image, {
           highWaterMark: 1024
         })
         input.on('data', function (data) {
-          console.log('write')
+          console.debug('write')
         })
         input.pipe(res)
       }
