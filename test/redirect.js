@@ -1,0 +1,230 @@
+
+var fs = require('fs')
+  , path = require('path')
+  , http = require('http')
+  , zlib = require('zlib')
+var should = require('should')
+var request = require('../index')
+
+var image = path.join(__dirname, '../fixtures/cat.png')
+  , image2 = path.join(__dirname, '../tmp/cat2.png')
+
+
+describe('stream file', function () {
+  var server
+  before(function (done) {
+    server = http.createServer()
+    server.on('request', function (req, res) {
+      if (req.url === '/redirect') {
+        console.log('redirect')
+        res.writeHead(301, {'location': '/'})
+        res.end()
+      } else {
+        console.log('send')
+        req.on('data', function (data) {
+          console.log('write')
+        })
+        req.pipe(res)
+      }
+    })
+    server.listen(6767, done)
+  })
+
+  it('0', function (done) {
+    var input = fs.createReadStream(image, {
+      highWaterMark: 1024
+    })
+    var output = fs.createWriteStream(image2)
+
+    var req = request({
+      method: 'GET',
+      host: 'localhost',
+      port: 6767,
+      path: '/redirect',
+      headers: {
+        'transfer-encoding': 'chunked'
+      },
+
+      protocol: 'http',
+      redirect: true
+    })
+
+    input
+      .pipe(req)
+      .pipe(output)
+
+    req.on('end', function () {
+      setTimeout(function () {
+        var stats = fs.statSync(image2)
+        stats.size.should.equal(22025)
+        done()
+      }, 0)
+    })
+  })
+
+  after(function (done) {
+    server.close(done)
+  })
+})
+
+describe('gzip stream file', function () {
+  var server
+  before(function (done) {
+    server = http.createServer()
+    server.on('request', function (req, res) {
+      if (req.url === '/redirect') {
+        console.log('redirect')
+        res.writeHead(301, {'location': '/'})
+        res.end()
+      } else {
+        console.log('send')
+        req.on('data', function (data) {
+          console.log('write')
+        })
+        res.writeHead(200, {'content-encoding': 'deflate'})
+        req.pipe(zlib.createDeflate()).pipe(res)
+      }
+    })
+    server.listen(6767, done)
+  })
+
+  it('1', function (done) {
+    var input = fs.createReadStream(image, {
+      highWaterMark: 1024
+    })
+    var output = fs.createWriteStream(image2)
+
+    var req = request({
+      method: 'GET',
+      host: 'localhost',
+      port: 6767,
+      path: '/redirect',
+      headers: {
+        'transfer-encoding': 'chunked',
+        'accept-encoding': 'gzip,deflate'
+      },
+
+      protocol: 'http',
+      gzip: true,
+      redirect: true
+    })
+
+    input
+      .pipe(req)
+      .pipe(output)
+
+    req.on('end', function () {
+      var stats = fs.statSync(image2)
+      stats.size.should.equal(22025)
+      done()
+    })
+  })
+
+  after(function (done) {
+    server.close(done)
+  })
+})
+
+describe('stream file callback', function () {
+  var server
+  before(function (done) {
+    server = http.createServer()
+    server.on('request', function (req, res) {
+      if (req.url === '/redirect') {
+        console.log('redirect')
+        res.writeHead(301, {'location': '/'})
+        res.end()
+      } else {
+        console.log('send')
+        req.on('data', function (data) {
+          console.log('write')
+        })
+        req.pipe(res)
+      }
+    })
+    server.listen(6767, done)
+  })
+
+  it('2', function (done) {
+    var input = fs.createReadStream(image, {
+      highWaterMark: 1024
+    })
+
+    var req = request({
+      method: 'GET',
+      host: 'localhost',
+      port: 6767,
+      path: '/redirect',
+      headers: {
+        'transfer-encoding': 'chunked'
+      },
+
+      protocol: 'http',
+      encoding: 'binary',
+      redirect: true,
+      callback: function (err, res, body) {
+        fs.writeFileSync(image2, body)
+        var stats = fs.statSync(image2)
+        stats.size.should.equal(22025)
+        done()
+      }
+    })
+
+    input
+      .pipe(req)
+  })
+
+  after(function (done) {
+    server.close(done)
+  })
+})
+
+describe('stream file without pipe', function () {
+  var server
+  before(function (done) {
+    server = http.createServer()
+    server.on('request', function (req, res) {
+      if (req.url === '/redirect') {
+        console.log('redirect')
+        res.writeHead(301, {'location': '/'})
+        res.end()
+      } else {
+        console.log('send')
+        var input = fs.createReadStream(image, {
+          highWaterMark: 1024
+        })
+        input.on('data', function (data) {
+          console.log('write')
+        })
+        input.pipe(res)
+      }
+    })
+    server.listen(6767, done)
+  })
+
+  it('3', function (done) {
+    var req = request({
+      method: 'GET',
+      host: 'localhost',
+      port: 6767,
+      path: '/redirect',
+      headers: {
+        'transfer-encoding': 'chunked'
+      },
+
+      protocol: 'http',
+      redirect: true,
+      encoding: 'binary',
+      callback: function (err, res, body) {
+        fs.writeFileSync(image2, body)
+        var stats = fs.statSync(image2)
+        stats.size.should.equal(22025)
+        done()
+      }
+    })
+  })
+
+  after(function (done) {
+    server.close(done)
+  })
+})
