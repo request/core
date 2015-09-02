@@ -41,7 +41,7 @@ var examples = {
     var output = fs.createWriteStream(path.join(__dirname, 'tmp/cat2.png'))
 
     var req = request({
-      protocol: 'http:',
+      protocol: 'http',
       method: 'GET',
       host: 'localhost',
       port: 6767,
@@ -60,9 +60,6 @@ var examples = {
       .pipe(req)
       .pipe(output)
   }
-
-  // test with gzip
-  // test without pipe
 }
 
 examples[process.argv[2]]()
