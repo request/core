@@ -7,23 +7,33 @@ util.inherits(Request, HTTPDuplex)
 
 
 function Request (options) {
-  this.url = options.url || options.uri
-  if (typeof this.uri === 'string') {
-    this.url = url.parse(this.url)
+  this._url = options.url || options.uri
+  if (typeof this._url === 'string') {
+    this._url = url.parse(this._url)
   }
   var protocol
-  if (!this.url) {
+  if (!this._url) {
     protocol = options.protocol
     delete options.protocol
   }
   else {
-    protocol = this.url.protocol
+    protocol = this._url.protocol
   }
   HTTPDuplex.call(this, protocol)
 }
 
 function request (options) {
   var req = new Request(options)
+
+  if (options.redirect) {
+    var redirect
+    try {
+      redirect = require('redirect')
+    } catch (err) {
+      throw new Error('npm install redirect')
+    }
+    redirect(req, options)
+  }
 
   // buffer
   if (options.callback) {

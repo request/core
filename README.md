@@ -1,6 +1,25 @@
 
+## Properties
+
+- **HTTPDuplex**
+  - `_url`
+
+  - `_req`
+  - `_res`
+  - `_client`
+
+  - `_redirect`
+  - `_chunk`
+  - `_src`
+
+- **res**
+  - `_headers`
+
+
 ## Options
 
+- **url/uri**
+  - `https://site.com`
 - **protocol**
   - `http:`
   - `https:`
@@ -14,11 +33,15 @@
   - `function(req, value)` define your own stream handler
 - **callback** buffers the response body
   - `function(err, res, body)` by default the response buffer is decoded into string using `utf8`. Set the `encoding` property to `binary` if you expect binary data, or any other specific encoding
+- **redirect**
+  - `true`
 
 
 ## Events
 
 - **redirect**
+
+.
 
 
   [iconv-lite]: https://www.npmjs.com/package/iconv-lite
