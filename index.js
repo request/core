@@ -26,24 +26,14 @@ function request (options) {
   var req = new Request(options)
 
   if (options.redirect) {
-    var redirect
-    try {
-      redirect = require('redirect')
-    } catch (err) {
-      throw new Error('npm install redirect')
-    }
+    var redirect = require('redirect')
     redirect(req, options)
   }
 
   // buffer
   if (options.callback) {
     if (typeof options.callback === 'function') {
-      var buffer
-      try {
-        buffer = require('buffer-response')
-      } catch (err) {
-        throw new Error('npm install buffer-response')
-      }
+      var buffer = require('buffer-response')
       buffer(req, options.encoding, options.callback)
     } else {
       throw new Error('calback should be a function')
@@ -51,31 +41,44 @@ function request (options) {
   }
   // stream
   else {
-    Object.keys(options).forEach(function (name) {
-      if (/gzip|encoding/.test(name)) {
-        var module = {}
-          , type = typeof options[name]
-        if (type === 'boolean' || type === 'string') {
-          try {
-            module[name] = require(name + '-stream')
-          } catch (err) {
-            throw new Error('npm install ' + name + '-stream')
-          }
-        }
-        else if (type === 'function') {
-          module[name] = options.gzip()
-        }
-        else {
-          throw new Error(name + ' should be boolean, string or a function')
-        }
-        var value
-        if (type === 'string') {
-          value = options[name]
-        }
-        module[name](req, value)
-        delete options[name]
+    if (options.gzip) {
+      var type = typeof options.gzip
+        , gzip
+      if (type === 'boolean' || type === 'string') {
+        gzip = require('gzip-stream')
       }
-    })
+      else if (type === 'function') {
+        gzip = options.gzip
+      }
+      else {
+        throw new Error(name + ' should be boolean, string or a function')
+      }
+      var value
+      if (type === 'string') {
+        value = options.gzip
+      }
+      gzip(req, value)
+      delete options.gzip
+    }
+    if (options.encoding) {
+      var type = typeof options.encoding
+        , encoding
+      if (type === 'boolean' || type === 'string') {
+        encoding = require('encoding-stream')
+      }
+      else if (type === 'function') {
+        encoding = options.encoding
+      }
+      else {
+        throw new Error(name + ' should be boolean, string or a function')
+      }
+      var value
+      if (type === 'string') {
+        value = options.encoding
+      }
+      encoding(req, value)
+      delete options.encoding
+    }
   }
 
   var piped = false
@@ -90,6 +93,12 @@ function request (options) {
   })
 
   req.start(options)
+
+  if (options.body) {
+    var body = require('body')
+    body(req, options)
+  }
+
   return req
 }
 
