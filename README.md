@@ -37,6 +37,10 @@
   - `function(err, res, body)` by default the response buffer is decoded into string using `utf8`. Set the `encoding` property to `binary` if you expect binary data, or any other specific encoding
 - **redirect**
   - `true`
+- **body**
+  - `Stream`
+  - `Buffer`
+  - `string`
 
 
 ## Events
