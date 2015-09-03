@@ -36,9 +36,6 @@ describe('01-duplex-stream', function () {
         host: 'localhost',
         port: 6767,
         path: '/',
-        headers: {
-          'transfer-encoding': 'chunked'
-        },
 
         protocol: 'http'
       })

@@ -23,6 +23,7 @@ function Request (options) {
 }
 
 function request (options) {
+  options.headers = options.headers || {}
   var req = new Request(options)
 
   if (options.redirect) {
@@ -78,23 +79,23 @@ function request (options) {
     }
   }
 
-  var piped = false
   req.on('pipe', function (src) {
-    piped = true
+    req._src = src
+    options.headers['transfer-encoding'] = 'chunked'
   })
-
-  process.nextTick(function () {
-    if (!piped) {
-      req.end()
-    }
-  })
-
-  req.start(options)
 
   if (options.body) {
     var body = require('body')
     body(req, options)
   }
+
+  process.nextTick(function () {
+    req.start(options)
+    // not piped
+    if (!req._src) {
+      req.end()
+    }
+  })
 
   return req
 }
