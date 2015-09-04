@@ -1,30 +1,18 @@
 
 var util = require('util')
-  , url = require('url')
+var utils = require('./lib/utils')
 var HTTPDuplex = require('http-duplex')
 
 util.inherits(Request, HTTPDuplex)
 
 
-function Request (options) {
-  this._url = options.url || options.uri
-  if (typeof this._url === 'string') {
-    this._url = url.parse(this._url)
-  }
-  var protocol
-  if (!this._url) {
-    protocol = options.protocol
-    delete options.protocol
-  }
-  else {
-    protocol = this._url.protocol
-  }
+function Request (protocol) {
   HTTPDuplex.call(this, protocol)
 }
 
 function request (options) {
-  options.headers = options.headers || {}
-  var req = new Request(options)
+  options = utils.init(options)
+  var req = new Request(options.protocol)
 
   if (options.redirect) {
     var redirect = require('redirect')
@@ -41,14 +29,9 @@ function request (options) {
       gzip = options.gzip
     }
     else {
-      throw new Error(name + ' should be boolean, string or a function')
+      throw new Error('gzip should be boolean, string or a function')
     }
-    var value
-    if (type === 'string') {
-      value = options.gzip
-    }
-    gzip(req, value)
-    delete options.gzip
+    gzip(req, options)
   }
   if (options.encoding && options.encoding !== 'binary') {
     var type = typeof options.encoding
@@ -60,20 +43,15 @@ function request (options) {
       encoding = options.encoding
     }
     else {
-      throw new Error(name + ' should be boolean, string or a function')
+      throw new Error('encoding should be boolean, string or a function')
     }
-    var value
-    if (type === 'string') {
-      value = options.encoding
-    }
-    encoding(req, value)
-    delete options.encoding
+    encoding(req, options)
   }
 
   if (options.callback) {
     if (typeof options.callback === 'function') {
       var buffer = require('buffer-response')
-      buffer(req, options.encoding, options.callback)
+      buffer(req, options)
     } else {
       throw new Error('calback should be a function')
     }
@@ -90,7 +68,7 @@ function request (options) {
   }
 
   process.nextTick(function () {
-    req.start(options)
+    req.start(utils.filter(options))
     // not piped
     if (!req._src) {
       req.end()
