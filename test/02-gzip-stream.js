@@ -13,7 +13,7 @@ var image = path.join(__dirname, './fixtures/cat.png')
 console.debug = debug('server')
 
 
-describe('02-gzip-stream', function () {
+describe('- gzip-stream', function () {
 
   describe('piping it externally', function () {
     var server
@@ -34,15 +34,7 @@ describe('02-gzip-stream', function () {
 
       var req = request({
         method: 'GET',
-        host: 'localhost',
-        port: 6767,
-        path: '/',
-        headers: {
-          'transfer-encoding': 'chunked',
-          'accept-encoding': 'gzip,deflate'
-        },
-
-        protocol: 'http'
+        url: 'http://localhost:6767'
       })
 
       input
@@ -84,10 +76,6 @@ describe('02-gzip-stream', function () {
         host: 'localhost',
         port: 6767,
         path: '/',
-        headers: {
-          'transfer-encoding': 'chunked',
-          'accept-encoding': 'gzip,deflate'
-        },
 
         protocol: 'http',
       })

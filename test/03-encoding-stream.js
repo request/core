@@ -8,7 +8,7 @@ var request = require('../index')
 console.debug = debug('server')
 
 
-describe('03-encoding-stream', function () {
+describe('- encoding-stream', function () {
 
   describe('piping it externally', function () {
     var server

@@ -14,7 +14,7 @@ var image = path.join(__dirname, './fixtures/cat.png')
 console.debug = debug('server')
 
 
-describe('05-buffer-response', function () {
+describe('- buffer-response', function () {
 
   describe('buffer externally', function () {
     var server
@@ -214,10 +214,6 @@ describe('05-buffer-response', function () {
         host: 'localhost',
         port: 6767,
         path: '/',
-        headers: {
-          'accept': 'text/plain',
-          'transfer-encoding': 'chunked'
-        },
 
         protocol: 'http',
         encoding: 'ISO-8859-1',

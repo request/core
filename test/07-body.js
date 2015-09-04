@@ -13,7 +13,7 @@ var image = path.join(__dirname, './fixtures/cat.png')
 console.debug = debug('server')
 
 
-describe('07-body', function () {
+describe('- body', function () {
 
   describe('body stream', function () {
     var server
@@ -108,6 +108,52 @@ describe('07-body', function () {
         stats.size.should.equal(22025)
         done()
       })
+    })
+
+    after(function (done) {
+      server.close(done)
+    })
+  })
+
+  describe.skip('', function () {
+    var server
+    before(function (done) {
+
+    })
+
+    it('', function (done) {
+      // for string I should set the content-length header
+      // either transfer-encoding:chunked or content-length should be set
+    })
+
+    after(function (done) {
+      server.close(done)
+    })
+  })
+
+  describe.skip('', function () {
+    var server
+    before(function (done) {
+
+    })
+
+    it('', function (done) {
+
+    })
+
+    after(function (done) {
+      server.close(done)
+    })
+  })
+
+  describe.skip('', function () {
+    var server
+    before(function (done) {
+
+    })
+
+    it('', function (done) {
+
     })
 
     after(function (done) {

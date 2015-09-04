@@ -13,7 +13,7 @@ var image = path.join(__dirname, './fixtures/cat.png')
 console.debug = debug('server')
 
 
-describe('06-redirect', function () {
+describe('- redirect', function () {
 
   describe('stream file', function () {
     var server

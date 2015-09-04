@@ -12,7 +12,7 @@ var image = path.join(__dirname, './fixtures/cat.png')
 console.debug = debug('server')
 
 
-describe('01-duplex-stream', function () {
+describe('- duplex-stream', function () {
 
   describe('pipe duplex stream', function () {
     var server

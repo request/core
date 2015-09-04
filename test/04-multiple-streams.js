@@ -9,7 +9,7 @@ var request = require('../index')
 console.debug = debug('server')
 
 
-describe('04-multiple-streams', function () {
+describe('- multiple-streams', function () {
 
   describe('piping it externally', function () {
     var server
