@@ -115,15 +115,41 @@ describe('- body', function () {
     })
   })
 
-  describe.skip('', function () {
+  describe('body stream + content-length', function () {
     var server
     before(function (done) {
-
+      server = http.createServer()
+      server.on('request', function (req, res) {
+        console.debug('request')
+        req.pipe(res)
+      })
+      server.listen(6767, done)
     })
 
-    it('', function (done) {
-      // for string I should set the content-length header
-      // either transfer-encoding:chunked or content-length should be set
+    it('2', function (done) {
+      var input = fs.createReadStream(image, {
+        highWaterMark: 1024
+      })
+      var output = fs.createWriteStream(image2)
+
+      var req = request({
+        method: 'GET',
+        url: 'http://localhost:6767',
+        headers: {
+          'content-length': 22025
+        },
+
+        body: input
+      })
+
+      req
+        .pipe(output)
+
+      output.on('close', function () {
+        var stats = fs.statSync(image2)
+        stats.size.should.equal(22025)
+        done()
+      })
     })
 
     after(function (done) {
@@ -131,14 +157,36 @@ describe('- body', function () {
     })
   })
 
-  describe.skip('', function () {
+  describe('buffer + content-length', function () {
     var server
     before(function (done) {
-
+      server = http.createServer()
+      server.on('request', function (req, res) {
+        var data = ''
+        req.on('data', function (chunk) {
+          data += chunk
+        })
+        req.on('end', function () {
+          res.end(data)
+        })
+      })
+      server.listen(6767, done)
     })
 
-    it('', function (done) {
+    it('3', function (done) {
+      var req = request({
+        method: 'GET',
+        url: 'http://localhost:6767',
+        headers: {
+          'content-length': 4
+        },
 
+        body: Buffer('poop'),
+        callback: function (err, res, body) {
+          body.should.equal('poop')
+          done()
+        }
+      })
     })
 
     after(function (done) {
@@ -146,14 +194,67 @@ describe('- body', function () {
     })
   })
 
-  describe.skip('', function () {
+  describe('buffer - content-length', function () {
     var server
     before(function (done) {
-
+      server = http.createServer()
+      server.on('request', function (req, res) {
+        var data = ''
+        req.on('data', function (chunk) {
+          data += chunk
+        })
+        req.on('end', function () {
+          res.end(data)
+        })
+      })
+      server.listen(6767, done)
     })
 
-    it('', function (done) {
+    it('4', function (done) {
+      var req = request({
+        method: 'GET',
+        url: 'http://localhost:6767',
 
+        body: Buffer('poop'),
+        callback: function (err, res, body) {
+          body.should.equal('poop')
+          done()
+        }
+      })
+    })
+
+    after(function (done) {
+      server.close(done)
+    })
+  })
+
+  describe('string - content-length', function () {
+    var server
+    before(function (done) {
+      server = http.createServer()
+      server.on('request', function (req, res) {
+        var data = ''
+        req.on('data', function (chunk) {
+          data += chunk
+        })
+        req.on('end', function () {
+          res.end(data)
+        })
+      })
+      server.listen(6767, done)
+    })
+
+    it('5', function (done) {
+      var req = request({
+        method: 'GET',
+        url: 'http://localhost:6767',
+
+        body: 'poop',
+        callback: function (err, res, body) {
+          body.should.equal('poop')
+          done()
+        }
+      })
     })
 
     after(function (done) {

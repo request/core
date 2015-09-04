@@ -59,16 +59,22 @@ function request (_options) {
 
   req.on('pipe', function (src) {
     req._src = src
-    options.headers['transfer-encoding'] = 'chunked'
   })
 
-  if (options.body) {
-    var body = require('body')
-    body(req, options)
+  var length = utils.getContentLength(options)
+  if (length) {
+    options.headers['content-length'] = length
+  }
+  else {
+    options.headers['transfer-encoding'] = 'chunked'
   }
 
   process.nextTick(function () {
     req.start(utils.filter(options))
+    if (options.body) {
+      var body = require('body')
+      body(req, options)
+    }
     // not piped
     if (!req._src) {
       req.end()
