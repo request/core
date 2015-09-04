@@ -10,8 +10,8 @@ function Request (protocol) {
   HTTPDuplex.call(this, protocol)
 }
 
-function request (options) {
-  options = utils.init(options)
+function request (_options) {
+  var options = utils.init(_options)
   var req = new Request(options.protocol)
 
   if (options.redirect) {

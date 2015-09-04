@@ -1,0 +1,14 @@
+[
+  "protocol",
+  "host",
+  "hostname",
+  "family",
+  "port",
+  "localAddress",
+  "socketPath",
+  "method",
+  "path",
+  "headers",
+  "auth",
+  "agent"
+]
