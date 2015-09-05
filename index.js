@@ -23,7 +23,7 @@ function request (_options) {
     var type = typeof options.gzip
       , gzip
     if (type === 'boolean' || type === 'string') {
-      gzip = require('gzip-stream')
+      gzip = require('gzip')
     }
     else if (type === 'function') {
       gzip = options.gzip
@@ -37,7 +37,7 @@ function request (_options) {
     var type = typeof options.encoding
       , encoding
     if (type === 'boolean' || type === 'string') {
-      encoding = require('encoding-stream')
+      encoding = require('encoding')
     }
     else if (type === 'function') {
       encoding = options.encoding
@@ -50,8 +50,8 @@ function request (_options) {
 
   if (options.callback) {
     if (typeof options.callback === 'function') {
-      var buffer = require('buffer-response')
-      buffer(req, options)
+      var callback = require('callback')
+      callback(req, options)
     } else {
       throw new Error('calback should be a function')
     }
