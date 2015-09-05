@@ -76,7 +76,7 @@ function request (_options) {
       body(req, options)
     }
     // not piped
-    if (!req._src) {
+    if (!req._src && (!options.agent || !options.agent.keepAlive)) {
       req.end()
     }
   })
