@@ -81,8 +81,14 @@ function request (_options) {
       var body = require('body')
       body(req, options)
     }
-    // not piped
-    if (!req._src && (!options.agent || !options.agent.keepAlive)) {
+    if (
+      // not piped
+      !req._src &&
+      // not keep-alive
+      (!options.agent || !options.agent.keepAlive) &&
+      // not multiple writes
+      (!Array.isArray(options.body) || !options.body.length)
+      ) {
       req.end()
     }
   })
