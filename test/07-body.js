@@ -7,8 +7,10 @@ var should = require('should')
   , debug = require('debug')
 var request = require('../index')
 
-var image = path.join(__dirname, './fixtures/cat.png')
-  , image2 = path.join(__dirname, './tmp/cat2.png')
+var image0 = path.join(__dirname, './fixtures/cat0.png')
+  , image1 = path.join(__dirname, './fixtures/cat1.png')
+  , image2 = path.join(__dirname, './fixtures/cat2.png')
+var tmp = path.join(__dirname, './tmp/cat.png')
 
 console.debug = debug('server')
 
@@ -27,10 +29,8 @@ describe('- body', function () {
     })
 
     it('0', function (done) {
-      var input = fs.createReadStream(image, {
-        highWaterMark: 1024
-      })
-      var output = fs.createWriteStream(image2)
+      var input = fs.createReadStream(image2, {highWaterMark: 1024})
+        , output = fs.createWriteStream(tmp)
 
       var req = request({
         method: 'GET',
@@ -49,7 +49,7 @@ describe('- body', function () {
         .pipe(output)
 
       output.on('close', function () {
-        var stats = fs.statSync(image2)
+        var stats = fs.statSync(tmp)
         stats.size.should.equal(22025)
         done()
       })
@@ -81,10 +81,8 @@ describe('- body', function () {
     })
 
     it('1', function (done) {
-      var input = fs.createReadStream(image, {
-        highWaterMark: 1024
-      })
-      var output = fs.createWriteStream(image2)
+      var input = fs.createReadStream(image2, {highWaterMark: 1024})
+        , output = fs.createWriteStream(tmp)
 
       var req = request({
         method: 'GET',
@@ -104,7 +102,7 @@ describe('- body', function () {
         .pipe(output)
 
       output.on('close', function () {
-        var stats = fs.statSync(image2)
+        var stats = fs.statSync(tmp)
         stats.size.should.equal(22025)
         done()
       })
@@ -127,10 +125,8 @@ describe('- body', function () {
     })
 
     it('2', function (done) {
-      var input = fs.createReadStream(image, {
-        highWaterMark: 1024
-      })
-      var output = fs.createWriteStream(image2)
+      var input = fs.createReadStream(image2, {highWaterMark: 1024})
+        , output = fs.createWriteStream(tmp)
 
       var req = request({
         method: 'GET',
@@ -146,7 +142,7 @@ describe('- body', function () {
         .pipe(output)
 
       output.on('close', function () {
-        var stats = fs.statSync(image2)
+        var stats = fs.statSync(tmp)
         stats.size.should.equal(22025)
         done()
       })
@@ -252,6 +248,36 @@ describe('- body', function () {
         body: 'poop',
         callback: function (err, res, body) {
           body.should.equal('poop')
+          done()
+        }
+      })
+    })
+
+    after(function (done) {
+      server.close(done)
+    })
+  })
+
+  describe('array - content-length', function () {
+    var server
+    before(function (done) {
+      server = http.createServer()
+      server.on('request', function (req, res) {
+        req.pipe(res)
+      })
+      server.listen(6767, done)
+    })
+
+    it('6', function (done) {
+      var input = fs.readFileSync(image2)
+
+      var req = request({
+        method: 'GET',
+        url: 'http://localhost:6767',
+
+        body: ['amazing', 'wqw', 'poop'],
+        callback: function (err, res, body) {
+          body.toString().should.equal('amazingwqwpoop')
           done()
         }
       })

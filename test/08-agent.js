@@ -8,8 +8,10 @@ var should = require('should')
   , bl = require('bl')
 var request = require('../index')
 
-var image = path.join(__dirname, './fixtures/cat.png')
-  , image2 = path.join(__dirname, './tmp/cat2.png')
+var image0 = path.join(__dirname, './fixtures/cat0.png')
+  , image1 = path.join(__dirname, './fixtures/cat1.png')
+  , image2 = path.join(__dirname, './fixtures/cat2.png')
+var tmp = path.join(__dirname, './tmp/cat.png')
 
 console.debug = debug('server')
 
@@ -36,9 +38,7 @@ describe('- agent', function () {
     })
 
     it('0', function (done) {
-      var input = fs.createReadStream(image, {
-        highWaterMark: 1024
-      })
+      var input = fs.createReadStream(image2, {highWaterMark: 1024})
 
       var agent = new http.Agent({
         keepAlive: true,
@@ -53,8 +53,8 @@ describe('- agent', function () {
 
         encoding: 'binary',
         callback: function (err, res, body) {
-          fs.writeFileSync(image2, body)
-          var stats = fs.statSync(image2)
+          fs.writeFileSync(tmp, body)
+          var stats = fs.statSync(tmp)
           stats.size.should.equal(22025)
           done()
         }

@@ -8,8 +8,10 @@ var should = require('should')
   , bl = require('bl')
 var request = require('../index')
 
-var image = path.join(__dirname, './fixtures/cat.png')
-  , image2 = path.join(__dirname, './tmp/cat2.png')
+var image0 = path.join(__dirname, './fixtures/cat0.png')
+  , image1 = path.join(__dirname, './fixtures/cat1.png')
+  , image2 = path.join(__dirname, './fixtures/cat2.png')
+var tmp = path.join(__dirname, './tmp/cat.png')
 
 console.debug = debug('server')
 
@@ -27,9 +29,7 @@ describe('- buffer-response', function () {
     })
 
     it('0', function (done) {
-      var input = fs.createReadStream(image, {
-        highWaterMark: 1024
-      })
+      var input = fs.createReadStream(image2, {highWaterMark: 1024})
 
       var req = request({
         method: 'GET',
@@ -54,10 +54,10 @@ describe('- buffer-response', function () {
         })
         .on('end', function () {
           // binary
-          fs.writeFileSync(image2, buffer.slice())
+          fs.writeFileSync(tmp, buffer.slice())
           // string
           // fs.writeFileSync(output, buffer.toString('some encoding'))
-          var stats = fs.statSync(image2)
+          var stats = fs.statSync(tmp)
           stats.size.should.equal(22025)
           done()
         })
@@ -80,9 +80,7 @@ describe('- buffer-response', function () {
     })
 
     it('1', function (done) {
-      var input = fs.createReadStream(image, {
-        highWaterMark: 1024
-      })
+      var input = fs.createReadStream(image2, {highWaterMark: 1024})
 
       var req = request({
         method: 'GET',
@@ -96,9 +94,9 @@ describe('- buffer-response', function () {
         protocol: 'http',
         encoding: 'binary',
         callback: function (err, res, body) {
-          fs.writeFileSync(image2, body)
+          fs.writeFileSync(tmp, body)
 
-          var stats = fs.statSync(image2)
+          var stats = fs.statSync(tmp)
           stats.size.should.equal(22025)
           done()
         }
@@ -160,9 +158,7 @@ describe('- buffer-response', function () {
     })
 
     it('3', function (done) {
-      var input = fs.createReadStream(image, {
-        highWaterMark: 1024
-      })
+      var input = fs.createReadStream(image2, {highWaterMark: 1024})
 
       var req = request({
         method: 'GET',
@@ -177,9 +173,9 @@ describe('- buffer-response', function () {
         encoding: 'binary',
         gzip: true,
         callback: function (err, res, body) {
-          fs.writeFileSync(image2, body)
+          fs.writeFileSync(tmp, body)
 
-          var stats = fs.statSync(image2)
+          var stats = fs.statSync(tmp)
           stats.size.should.equal(22025)
           done()
         }
