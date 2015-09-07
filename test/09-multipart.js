@@ -19,7 +19,7 @@ console.debug = debug('server')
 
 describe('- multipart', function () {
 
-  describe('multipart/related - 1 file', function () {
+  describe('multipart/related - stream one file', function () {
     var server
     before(function (done) {
       server = http.createServer()
@@ -64,14 +64,61 @@ describe('- multipart', function () {
     })
   })
 
-  describe.skip('', function () {
+  describe('multipart/related - request one file', function () {
     var server
     before(function (done) {
+      server = http.createServer()
+      server.on('request', function (req, res) {
+        if (req.url === '/download') {
+          var image = fs.createReadStream(image2, {highWaterMark: 1024})
+          image.on('data', function (chunk) {
+            console.debug('download chunk')
+          })
+          image.pipe(res)
+        }
+        else {
+          var form = new formidable.IncomingForm()
+          // form.uploadDir = path.join(__dirname, 'tmp')
+          // form.on('fileBegin', function (name, file) {})
 
+          form.parse(req, function (err, fields, files) {})
+          form.onPart = function (part) {
+            part.on('data', function (chunk) {
+              console.debug('response chunk')
+            })
+            part.pipe(res)
+          }
+        }
+      })
+      server.listen(6767, done)
     })
 
-    it('', function (done) {
+    it('1', function (done) {
+      var input = request({
+        method: 'GET',
+        url: 'http://localhost:6767/download',
 
+        encoding: 'binary'
+      })
+
+      var req = request({
+        method: 'GET',
+        url: 'http://localhost:6767',
+
+        encoding: 'binary',
+        multipart: [
+          {
+            'Content-Type': 'image/png',
+            body: input
+          }
+        ],
+        callback: function (err, res, body) {
+          fs.writeFileSync(tmp, body)
+          var stats = fs.statSync(tmp)
+          stats.size.should.equal(22025)
+          done()
+        }
+      })
     })
 
     after(function (done) {
@@ -79,14 +126,49 @@ describe('- multipart', function () {
     })
   })
 
-  describe.skip('', function () {
+  describe('multipart/related - buffer one file', function () {
     var server
     before(function (done) {
+      server = http.createServer()
+      server.on('request', function (req, res) {
+        console.debug('request')
+        var form = new formidable.IncomingForm()
+        // form.uploadDir = path.join(__dirname, 'tmp')
+        // form.on('fileBegin', function (name, file) {})
 
+        req.on('data', function (chunk) {
+          console.debug('write')
+        })
+
+        form.parse(req, function (err, fields, files) {})
+        form.onPart = function (part) {
+          part.pipe(res)
+        }
+      })
+      server.listen(6767, done)
     })
 
-    it('', function (done) {
+    it('2', function (done) {
+      var input = fs.readFileSync(image2)
 
+      var req = request({
+        method: 'GET',
+        url: 'http://localhost:6767',
+
+        encoding: 'binary',
+        multipart: [
+          {
+            'Content-Type': 'image/png',
+            body: input
+          }
+        ],
+        callback: function (err, res, body) {
+          fs.writeFileSync(tmp, body)
+          var stats = fs.statSync(tmp)
+          stats.size.should.equal(22025)
+          done()
+        }
+      })
     })
 
     after(function (done) {
@@ -94,14 +176,44 @@ describe('- multipart', function () {
     })
   })
 
-  describe.skip('', function () {
+  describe('multipart/related - buffer one string', function () {
     var server
     before(function (done) {
+      server = http.createServer()
+      server.on('request', function (req, res) {
+        console.debug('request')
+        var form = new formidable.IncomingForm()
+        // form.uploadDir = path.join(__dirname, 'tmp')
+        // form.on('fileBegin', function (name, file) {})
 
+        req.on('data', function (chunk) {
+          console.debug('write')
+        })
+
+        form.parse(req, function (err, fields, files) {})
+        form.onPart = function (part) {
+          part.pipe(res)
+        }
+      })
+      server.listen(6767, done)
     })
 
-    it('', function (done) {
+    it('3', function (done) {
+      var req = request({
+        method: 'GET',
+        url: 'http://localhost:6767',
 
+        multipart: [
+          {
+            'Content-Type': 'text/plain',
+            body: 'poop'
+          }
+        ],
+        callback: function (err, res, body) {
+          body.should.equal('poop')
+          done()
+        }
+      })
     })
 
     after(function (done) {
