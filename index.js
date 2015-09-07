@@ -48,11 +48,17 @@ function request (_options) {
     encoding(req, options)
   }
 
+  if (options.multipart) {
+    var multipart = require('multipart')
+    multipart(req, options)
+  }
+
   if (options.callback) {
     if (typeof options.callback === 'function') {
       var callback = require('callback')
       callback(req, options)
-    } else {
+    }
+    else {
       throw new Error('calback should be a function')
     }
   }
