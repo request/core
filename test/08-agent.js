@@ -56,6 +56,7 @@ describe('- agent', function () {
           fs.writeFileSync(tmp, body)
           var stats = fs.statSync(tmp)
           stats.size.should.equal(22025)
+          agent.destroy()
           done()
         }
       })
