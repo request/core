@@ -67,29 +67,42 @@ function request (_options) {
     req._src = src
   })
 
-  var length = utils.getContentLength(options)
-  if (length) {
-    options.headers['content-length'] = length
-  }
-  else {
-    options.headers['transfer-encoding'] = 'chunked'
-  }
-
   process.nextTick(function () {
-    req.start(utils.filter(options))
-    if (options.body) {
-      var body = require('body')
-      body(req, options)
+    if (options.contentLength) {
+      var contentLength = require('content-length')
+      contentLength(req, options, function (length) {
+        if (length) {
+          options.headers['content-length'] = length
+        }
+        start()
+      })
     }
-    if (
-      // not piped
-      !req._src &&
-      // not keep-alive
-      (!options.agent || !options.agent.keepAlive) &&
-      // not multiple writes
-      (!Array.isArray(options.body) || !options.body.length)
-      ) {
-      req.end()
+    else {
+      start()
+    }
+
+    function start () {
+      if (options.headers['content-length'] === undefined) {
+        options.headers['transfer-encoding'] = 'chunked'
+      }
+
+      req.start(utils.filter(options))
+
+      if (options.body) {
+        var body = require('body')
+        body(req, options)
+      }
+
+      if (
+        // not piped
+        !req._src &&
+        // not keep-alive
+        (!options.agent || !options.agent.keepAlive) &&
+        // not multiple writes
+        (!Array.isArray(options.body) || !options.body.length)
+        ) {
+        req.end()
+      }
     }
   })
 
