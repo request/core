@@ -14,7 +14,8 @@ var image0 = path.join(__dirname, './fixtures/cat0.png')
   , image2 = path.join(__dirname, './fixtures/cat2.png')
 var tmp = path.join(__dirname, './tmp/cat.png')
 
-console.debug = debug('server')
+console.server = debug('server')
+console.client = debug('client')
 
 
 describe('- multipart', function () {
@@ -24,7 +25,7 @@ describe('- multipart', function () {
     before(function (done) {
       server = http.createServer()
       server.on('request', function (req, res) {
-        console.debug(req.headers)
+        console.server(req.headers)
         var form = new formidable.IncomingForm()
         // form.uploadDir = path.join(__dirname, 'tmp')
         // form.on('fileBegin', function (name, file) {})
@@ -41,9 +42,8 @@ describe('- multipart', function () {
       var input = fs.createReadStream(image2, {highWaterMark: 1024})
 
       var req = request({
-        method: 'GET',
+        method: 'POST',
         url: 'http://localhost:6767',
-
         encoding: 'binary',
         multipart: [
           {
@@ -71,21 +71,20 @@ describe('- multipart', function () {
       server = http.createServer()
       server.on('request', function (req, res) {
         if (req.url === '/download') {
+          console.server(req.headers, 'download')
           var image = fs.createReadStream(image2, {highWaterMark: 1024})
           image.on('data', function (chunk) {
-            console.debug('download chunk')
+            console.server('download chunk')
           })
           image.pipe(res)
         }
         else {
+          console.server(req.headers, 'upload')
           var form = new formidable.IncomingForm()
-          // form.uploadDir = path.join(__dirname, 'tmp')
-          // form.on('fileBegin', function (name, file) {})
-
           form.parse(req, function (err, fields, files) {})
           form.onPart = function (part) {
             part.on('data', function (chunk) {
-              console.debug('response chunk')
+              console.server('response chunk')
             })
             part.pipe(res)
           }
@@ -98,14 +97,12 @@ describe('- multipart', function () {
       var input = request({
         method: 'GET',
         url: 'http://localhost:6767/download',
-
         encoding: 'binary'
       })
 
       var req = request({
-        method: 'GET',
+        method: 'POST',
         url: 'http://localhost:6767',
-
         encoding: 'binary',
         multipart: [
           {
@@ -132,17 +129,13 @@ describe('- multipart', function () {
     before(function (done) {
       server = http.createServer()
       server.on('request', function (req, res) {
-        console.debug('request')
+        console.server(req.headers)
         var form = new formidable.IncomingForm()
-        // form.uploadDir = path.join(__dirname, 'tmp')
-        // form.on('fileBegin', function (name, file) {})
-
-        req.on('data', function (chunk) {
-          console.debug('write')
-        })
-
         form.parse(req, function (err, fields, files) {})
         form.onPart = function (part) {
+          part.on('data', function (chunk) {
+            console.server('data')
+          })
           part.pipe(res)
         }
       })
@@ -153,9 +146,8 @@ describe('- multipart', function () {
       var input = fs.readFileSync(image2)
 
       var req = request({
-        method: 'GET',
+        method: 'POST',
         url: 'http://localhost:6767',
-
         encoding: 'binary',
         multipart: [
           {
@@ -182,17 +174,13 @@ describe('- multipart', function () {
     before(function (done) {
       server = http.createServer()
       server.on('request', function (req, res) {
-        console.debug('request')
+        console.server(req.headers)
         var form = new formidable.IncomingForm()
-        // form.uploadDir = path.join(__dirname, 'tmp')
-        // form.on('fileBegin', function (name, file) {})
-
-        req.on('data', function (chunk) {
-          console.debug('write')
-        })
-
         form.parse(req, function (err, fields, files) {})
         form.onPart = function (part) {
+          part.on('data', function (chunk) {
+            console.server('data')
+          })
           part.pipe(res)
         }
       })
@@ -201,9 +189,8 @@ describe('- multipart', function () {
 
     it('3', function (done) {
       var req = request({
-        method: 'GET',
+        method: 'POST',
         url: 'http://localhost:6767',
-
         multipart: [
           {
             'Content-Type': 'text/plain',
@@ -227,9 +214,8 @@ describe('- multipart', function () {
     before(function (done) {
       server = http.createServer()
       server.on('request', function (req, res) {
-        console.debug(req.headers)
+        console.server(req.headers)
         var form = new formidable.IncomingForm()
-
         form.parse(req, function (err, fields, files) {})
         form.onPart = function (part) {
           if (part.name === 'file') {
@@ -244,9 +230,8 @@ describe('- multipart', function () {
       var input = fs.createReadStream(image2, {highWaterMark: 1024})
 
       var req = request({
-        method: 'GET',
+        method: 'PUT',
         url: 'http://localhost:6767',
-
         encoding: 'binary',
         multipart: {
           message: 'poop',
@@ -259,21 +244,6 @@ describe('- multipart', function () {
           done()
         }
       })
-    })
-
-    after(function (done) {
-      server.close(done)
-    })
-  })
-
-  describe.skip('', function () {
-    var server
-    before(function (done) {
-
-    })
-
-    it('', function (done) {
-
     })
 
     after(function (done) {

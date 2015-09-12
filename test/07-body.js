@@ -12,7 +12,8 @@ var image0 = path.join(__dirname, './fixtures/cat0.png')
   , image2 = path.join(__dirname, './fixtures/cat2.png')
 var tmp = path.join(__dirname, './tmp/cat.png')
 
-console.debug = debug('server')
+console.server = debug('server')
+console.client = debug('client')
 
 
 describe('- body', function () {
@@ -22,7 +23,7 @@ describe('- body', function () {
     before(function (done) {
       server = http.createServer()
       server.on('request', function (req, res) {
-        console.debug('request')
+        console.server(req.headers)
         req.pipe(res)
       })
       server.listen(6767, done)
@@ -33,20 +34,11 @@ describe('- body', function () {
         , output = fs.createWriteStream(tmp)
 
       var req = request({
-        method: 'GET',
-        host: 'localhost',
-        port: 6767,
-        path: '/',
-        headers: {
-          'transfer-encoding': 'chunked'
-        },
-
-        protocol: 'http',
+        url: 'http://localhost:6767',
         body: input
       })
 
-      req
-        .pipe(output)
+      req.pipe(output)
 
       output.on('close', function () {
         var stats = fs.statSync(tmp)
@@ -66,13 +58,13 @@ describe('- body', function () {
       server = http.createServer()
       server.on('request', function (req, res) {
         if (req.url === '/redirect') {
-          console.debug('redirect')
+          console.server(req.headers, 'redirect')
           res.writeHead(301, {'location': '/'})
           res.end()
         } else {
-          console.debug('send')
+          console.server(req.headers, 'response')
           req.on('data', function (data) {
-            console.debug('write')
+            console.server('data')
           })
           req.pipe(res)
         }
@@ -85,21 +77,16 @@ describe('- body', function () {
         , output = fs.createWriteStream(tmp)
 
       var req = request({
-        method: 'GET',
-        host: 'localhost',
-        port: 6767,
-        path: '/redirect',
-        headers: {
-          'transfer-encoding': 'chunked'
-        },
-
-        protocol: 'http',
+        url: 'http://localhost:6767/redirect',
         redirect: true,
         body: input
       })
 
-      req
-        .pipe(output)
+      req.pipe(output)
+
+      req.on('response', function (res) {
+        console.client(res.headers)
+      })
 
       output.on('close', function () {
         var stats = fs.statSync(tmp)
@@ -118,7 +105,7 @@ describe('- body', function () {
     before(function (done) {
       server = http.createServer()
       server.on('request', function (req, res) {
-        console.debug('request')
+        console.server(req.headers)
         req.pipe(res)
       })
       server.listen(6767, done)
@@ -129,17 +116,14 @@ describe('- body', function () {
         , output = fs.createWriteStream(tmp)
 
       var req = request({
-        method: 'GET',
         url: 'http://localhost:6767',
         headers: {
           'content-length': 22025
         },
-
         body: input
       })
 
-      req
-        .pipe(output)
+      req.pipe(output)
 
       output.on('close', function () {
         var stats = fs.statSync(tmp)
@@ -158,6 +142,7 @@ describe('- body', function () {
     before(function (done) {
       server = http.createServer()
       server.on('request', function (req, res) {
+        console.server(req.headers)
         var data = ''
         req.on('data', function (chunk) {
           data += chunk
@@ -171,12 +156,10 @@ describe('- body', function () {
 
     it('3', function (done) {
       var req = request({
-        method: 'GET',
         url: 'http://localhost:6767',
         headers: {
           'content-length': 4
         },
-
         body: Buffer('poop'),
         callback: function (err, res, body) {
           body.should.equal('poop')
@@ -195,6 +178,7 @@ describe('- body', function () {
     before(function (done) {
       server = http.createServer()
       server.on('request', function (req, res) {
+        console.server(req.headers)
         var data = ''
         req.on('data', function (chunk) {
           data += chunk
@@ -208,9 +192,7 @@ describe('- body', function () {
 
     it('4', function (done) {
       var req = request({
-        method: 'GET',
         url: 'http://localhost:6767',
-
         body: Buffer('poop'),
         callback: function (err, res, body) {
           body.should.equal('poop')
@@ -229,6 +211,7 @@ describe('- body', function () {
     before(function (done) {
       server = http.createServer()
       server.on('request', function (req, res) {
+        console.server(req.headers)
         var data = ''
         req.on('data', function (chunk) {
           data += chunk
@@ -242,9 +225,7 @@ describe('- body', function () {
 
     it('5', function (done) {
       var req = request({
-        method: 'GET',
         url: 'http://localhost:6767',
-
         body: 'poop',
         callback: function (err, res, body) {
           body.should.equal('poop')
@@ -263,18 +244,15 @@ describe('- body', function () {
     before(function (done) {
       server = http.createServer()
       server.on('request', function (req, res) {
+        console.server(req.headers)
         req.pipe(res)
       })
       server.listen(6767, done)
     })
 
     it('6', function (done) {
-      var input = fs.readFileSync(image2)
-
       var req = request({
-        method: 'GET',
         url: 'http://localhost:6767',
-
         body: ['amazing', 'wqw', 'poop'],
         callback: function (err, res, body) {
           body.toString().should.equal('amazingwqwpoop')

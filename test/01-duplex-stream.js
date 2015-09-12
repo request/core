@@ -11,7 +11,8 @@ var image0 = path.join(__dirname, './fixtures/cat0.png')
   , image2 = path.join(__dirname, './fixtures/cat2.png')
 var tmp = path.join(__dirname, './tmp/cat.png')
 
-console.debug = debug('server')
+console.server = debug('server')
+console.client = debug('client')
 
 
 describe('- duplex-stream', function () {
@@ -21,7 +22,7 @@ describe('- duplex-stream', function () {
     before(function (done) {
       server = http.createServer()
       server.on('request', function (req, res) {
-        console.debug('request')
+        console.server(req.headers)
         req.pipe(res)
       })
       server.listen(6767, done)
@@ -43,6 +44,140 @@ describe('- duplex-stream', function () {
       input
         .pipe(req)
         .pipe(output)
+
+      output.on('close', function () {
+        var stats = fs.statSync(tmp)
+        stats.size.should.equal(22025)
+        done()
+      })
+    })
+
+    after(function (done) {
+      server.close(done)
+    })
+  })
+
+  describe('pipe two request streams', function () {
+    var server
+    before(function (done) {
+      server = http.createServer()
+      server.on('request', function (req, res) {
+        console.server(req.headers)
+        req.pipe(res)
+      })
+      server.listen(6767, done)
+    })
+
+    it('1', function (done) {
+      var input = fs.createReadStream(image2, {highWaterMark: 1024})
+        , output = fs.createWriteStream(tmp)
+
+      var req1 = request({
+        url: 'http://localhost:6767'
+      })
+      var req2 = request({
+        url: 'http://localhost:6767'
+      })
+
+      input
+        .pipe(req1)
+        .pipe(req2)
+        .pipe(output)
+
+      output.on('close', function () {
+        var stats = fs.statSync(tmp)
+        stats.size.should.equal(22025)
+        done()
+      })
+    })
+
+    after(function (done) {
+      server.close(done)
+    })
+  })
+
+  describe('manual read to pipe', function () {
+    var server
+    before(function (done) {
+      server = http.createServer()
+      server.on('request', function (req, res) {
+        console.server(req.headers)
+        req.pipe(res)
+      })
+      server.listen(6767, done)
+    })
+
+    it('2', function (done) {
+      var input = fs.createReadStream(image2, {highWaterMark: 1024})
+        , output = fs.createWriteStream(tmp)
+
+      var req = request({
+        url: 'http://localhost:6767',
+        end: false
+      })
+
+      input.on('readable', function () {
+        var chunk = input.read()
+        if (chunk) {
+          req.write(chunk)
+        }
+        else {
+          req.end()
+        }
+      })
+
+      req.pipe(output)
+
+      output.on('close', function () {
+        var stats = fs.statSync(tmp)
+        stats.size.should.equal(22025)
+        done()
+      })
+    })
+
+    after(function (done) {
+      server.close(done)
+    })
+  })
+
+  describe('manual read and manual write', function () {
+    var server
+    before(function (done) {
+      server = http.createServer()
+      server.on('request', function (req, res) {
+        console.server(req.headers)
+        req.pipe(res)
+      })
+      server.listen(6767, done)
+    })
+
+    it('3', function (done) {
+      var input = fs.createReadStream(image2, {highWaterMark: 1024})
+        , output = fs.createWriteStream(tmp)
+
+      var req = request({
+        url: 'http://localhost:6767',
+        end: false
+      })
+
+      input.on('readable', function () {
+        var chunk = input.read()
+        if (chunk) {
+          req.write(chunk)
+        }
+        else {
+          req.end()
+        }
+      })
+      req.on('readable', function () {
+        var chunk = req.read()
+        if (chunk) {
+          output.write(chunk)
+        }
+        else {
+          output.end()
+        }
+      })
 
       output.on('close', function () {
         var stats = fs.statSync(tmp)

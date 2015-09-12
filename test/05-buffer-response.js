@@ -13,7 +13,8 @@ var image0 = path.join(__dirname, './fixtures/cat0.png')
   , image2 = path.join(__dirname, './fixtures/cat2.png')
 var tmp = path.join(__dirname, './tmp/cat.png')
 
-console.debug = debug('server')
+console.server = debug('server')
+console.client = debug('client')
 
 
 describe('- buffer-response', function () {
@@ -23,6 +24,7 @@ describe('- buffer-response', function () {
     before(function (done) {
       server = http.createServer()
       server.on('request', function (req, res) {
+        console.server(req.headers)
         req.pipe(res)
       })
       server.listen(6767, done)
@@ -32,15 +34,7 @@ describe('- buffer-response', function () {
       var input = fs.createReadStream(image2, {highWaterMark: 1024})
 
       var req = request({
-        method: 'GET',
-        host: 'localhost',
-        port: 6767,
-        path: '/',
-        headers: {
-          'transfer-encoding': 'chunked'
-        },
-
-        protocol: 'http',
+        url: 'http://localhost:6767'
       })
 
       input
@@ -69,11 +63,12 @@ describe('- buffer-response', function () {
     })
   })
 
-  describe('buffer binary using buffer-response', function () {
+  describe('callback + binary', function () {
     var server
     before(function (done) {
       server = http.createServer()
       server.on('request', function (req, res) {
+        console.server(req.headers)
         req.pipe(res)
       })
       server.listen(6767, done)
@@ -83,19 +78,10 @@ describe('- buffer-response', function () {
       var input = fs.createReadStream(image2, {highWaterMark: 1024})
 
       var req = request({
-        method: 'GET',
-        host: 'localhost',
-        port: 6767,
-        path: '/',
-        headers: {
-          'transfer-encoding': 'chunked'
-        },
-
-        protocol: 'http',
+        url: 'http://localhost:6767',
         encoding: 'binary',
         callback: function (err, res, body) {
           fs.writeFileSync(tmp, body)
-
           var stats = fs.statSync(tmp)
           stats.size.should.equal(22025)
           done()
@@ -111,12 +97,12 @@ describe('- buffer-response', function () {
     })
   })
 
-  describe('buffer string using buffer-response', function () {
+  describe('callback + string', function () {
     var server
     before(function (done) {
       server = http.createServer()
       server.on('request', function (req, res) {
-        console.debug('request')
+        console.server(req.headers)
         res.end(JSON.stringify({a:'b'}))
       })
       server.listen(6767, done)
@@ -124,16 +110,7 @@ describe('- buffer-response', function () {
 
     it('2', function (done) {
       var req = request({
-        method: 'GET',
-        host: 'localhost',
-        port: 6767,
-        path: '/',
-        headers: {
-          'accept': 'text/plain',
-          'transfer-encoding': 'chunked'
-        },
-
-        protocol: 'http',
+        url: 'http://localhost:6767',
         callback: function (err, res, body) {
           should.deepEqual(JSON.parse(body), {a:'b'})
           done()
@@ -146,11 +123,12 @@ describe('- buffer-response', function () {
     })
   })
 
-  describe('buffer-response binary + gzip-stream', function () {
+  describe('callback + binary + gzip', function () {
     var server
     before(function (done) {
       server = http.createServer()
       server.on('request', function (req, res) {
+        console.server(req.headers)
         res.writeHead(200, {'content-encoding': 'deflate'})
         req.pipe(zlib.createDeflate()).pipe(res)
       })
@@ -161,20 +139,11 @@ describe('- buffer-response', function () {
       var input = fs.createReadStream(image2, {highWaterMark: 1024})
 
       var req = request({
-        method: 'GET',
-        host: 'localhost',
-        port: 6767,
-        path: '/',
-        headers: {
-          'transfer-encoding': 'chunked'
-        },
-
-        protocol: 'http',
+        url: 'http://localhost:6767',
         encoding: 'binary',
         gzip: true,
         callback: function (err, res, body) {
           fs.writeFileSync(tmp, body)
-
           var stats = fs.statSync(tmp)
           stats.size.should.equal(22025)
           done()
@@ -190,12 +159,12 @@ describe('- buffer-response', function () {
     })
   })
 
-  describe('buffer-response string + encoding-stream', function () {
+  describe('callback + encoding', function () {
     var server
     before(function (done) {
       server = http.createServer()
       server.on('request', function (req, res) {
-        console.debug('request')
+        console.server(req.headers)
         res.writeHead(200, {})
         // ISO-8859-1
         // transfer the characters with wrong encoding
@@ -206,12 +175,7 @@ describe('- buffer-response', function () {
 
     it('4', function (done) {
       var req = request({
-        method: 'GET',
-        host: 'localhost',
-        port: 6767,
-        path: '/',
-
-        protocol: 'http',
+        url: 'http://localhost:6767',
         encoding: 'ISO-8859-1',
         callback: function (err, res, body) {
           should.deepEqual(body, 'Pathé Chamnord Ç, ç, Ð, ð')

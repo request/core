@@ -13,7 +13,8 @@ var image0 = path.join(__dirname, './fixtures/cat0.png')
   , image2 = path.join(__dirname, './fixtures/cat2.png')
 var tmp = path.join(__dirname, './tmp/cat.png')
 
-console.debug = debug('server')
+console.server = debug('server')
+console.client = debug('client')
 
 
 describe('- agent', function () {
@@ -23,10 +24,10 @@ describe('- agent', function () {
     before(function (done) {
       server = http.createServer()
       server.on('request', function (req, res) {
-        console.debug('request', req.headers)
+        console.server(req.headers)
         var buffer = bl()
         req.on('data', function (chunk) {
-          console.debug('data')
+          console.server('data')
           buffer.append(chunk)
         })
         req.on('end', function () {
@@ -50,7 +51,6 @@ describe('- agent', function () {
         method: 'GET',
         url: 'http://localhost:6767',
         agent: agent,
-
         encoding: 'binary',
         callback: function (err, res, body) {
           fs.writeFileSync(tmp, body)

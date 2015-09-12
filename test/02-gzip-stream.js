@@ -12,7 +12,8 @@ var image0 = path.join(__dirname, './fixtures/cat0.png')
   , image2 = path.join(__dirname, './fixtures/cat2.png')
 var tmp = path.join(__dirname, './tmp/cat.png')
 
-console.debug = debug('server')
+console.server = debug('server')
+console.client = debug('client')
 
 
 describe('- gzip-stream', function () {
@@ -22,6 +23,7 @@ describe('- gzip-stream', function () {
     before(function (done) {
       server = http.createServer()
       server.on('request', function (req, res) {
+        console.server(req.headers)
         res.writeHead(200, {'content-encoding': 'deflate'})
         req.pipe(zlib.createDeflate()).pipe(res)
       })
@@ -59,6 +61,7 @@ describe('- gzip-stream', function () {
     before(function (done) {
       server = http.createServer()
       server.on('request', function (req, res) {
+        console.server(req.headers)
         res.writeHead(200, {'content-encoding': 'deflate'})
         req.pipe(zlib.createDeflate()).pipe(res)
       })
@@ -109,6 +112,7 @@ describe('- gzip-stream', function () {
     before(function (done) {
       server = http.createServer()
       server.on('request', function (req, res) {
+        console.server(req.headers)
         res.writeHead(200, {'content-encoding': 'deflate'})
         req.pipe(zlib.createDeflate()).pipe(res)
       })
@@ -126,7 +130,7 @@ describe('- gzip-stream', function () {
         path: '/',
         headers: {
           'transfer-encoding': 'chunked',
-          'accept-encoding': 'gzip,deflate'
+          'accept-encoding': 'gzip, deflate'
         },
 
         protocol: 'http',
