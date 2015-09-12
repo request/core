@@ -67,44 +67,51 @@ function request (_options) {
     req._src = src
   })
 
-  process.nextTick(function () {
+  req.once('init', init)
+  process.nextTick(init)
+
+  function init () {
+    if (req._initialized) return
+
     if (options.contentLength) {
       var contentLength = require('content-length')
       contentLength(req, options, function (length) {
         if (length) {
           options.headers['content-length'] = length
         }
-        start()
+        _init()
       })
     }
     else {
-      start()
+      _init()
     }
 
-    function start () {
+    function _init () {
       if (options.headers['content-length'] === undefined) {
         options.headers['transfer-encoding'] = 'chunked'
       }
 
-      req.start(utils.filter(options))
+      req.init(utils.filter(options))
 
       if (options.body) {
         var body = require('body')
         body(req, options)
       }
 
+      if (options.end === false) return
+
       if (
+        // not started
+        !req._started &&
         // not piped
         !req._src &&
         // not keep-alive
-        (!options.agent || !options.agent.keepAlive) &&
-        // not multiple writes
-        (!Array.isArray(options.body) || !options.body.length)
-        ) {
+        (!options.agent || !options.agent.keepAlive)
+      ) {
         req.end()
       }
     }
-  })
+  }
 
   return req
 }
