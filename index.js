@@ -13,6 +13,9 @@ function Request (protocol) {
 function request (_options) {
   var options = utils.init(_options)
   var req = new Request(options.protocol)
+  req.on('response', function (res) {
+    utils.response(res)
+  })
 
   if (options.redirect) {
     var redirect = require('redirect')
@@ -77,7 +80,7 @@ function request (_options) {
       var contentLength = require('content-length')
       contentLength(req, options, function (length) {
         if (length) {
-          options.headers['content-length'] = length
+          options.headers.set('content-length', length)
         }
         _init()
       })
@@ -87,8 +90,8 @@ function request (_options) {
     }
 
     function _init () {
-      if (options.headers['content-length'] === undefined) {
-        options.headers['transfer-encoding'] = 'chunked'
+      if (options.headers.get('content-length') === undefined) {
+        options.headers.set('transfer-encoding', 'chunked')
       }
 
       req.init(utils.filter(options))
