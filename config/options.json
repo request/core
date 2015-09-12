@@ -6,5 +6,7 @@
   "callback",
   "redirect",
   "body",
-  "multipart"
+  "multipart",
+  "contentLength",
+  "end"
 ]
