@@ -66,6 +66,11 @@ function request (_options) {
     }
   }
 
+  if (process.env.DEBUG) {
+    var log = require('log')
+    log(req)
+  }
+
   req.on('pipe', function (src) {
     req._src = src
   })
