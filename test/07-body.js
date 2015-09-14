@@ -100,43 +100,6 @@ describe('- body', function () {
     })
   })
 
-  describe('body stream + content-length', function () {
-    var server
-    before(function (done) {
-      server = http.createServer()
-      server.on('request', function (req, res) {
-        console.server(req.headers)
-        req.pipe(res)
-      })
-      server.listen(6767, done)
-    })
-
-    it('2', function (done) {
-      var input = fs.createReadStream(image2, {highWaterMark: 1024})
-        , output = fs.createWriteStream(tmp)
-
-      var req = request({
-        url: 'http://localhost:6767',
-        headers: {
-          'content-length': 22025
-        },
-        body: input
-      })
-
-      req.pipe(output)
-
-      output.on('close', function () {
-        var stats = fs.statSync(tmp)
-        stats.size.should.equal(22025)
-        done()
-      })
-    })
-
-    after(function (done) {
-      server.close(done)
-    })
-  })
-
   describe('body file + pipe output', function () {
     var server
     before(function (done) {
@@ -203,43 +166,7 @@ describe('- body', function () {
     })
   })
 
-  describe('buffer + content-length', function () {
-    var server
-    before(function (done) {
-      server = http.createServer()
-      server.on('request', function (req, res) {
-        console.server(req.headers)
-        var data = ''
-        req.on('data', function (chunk) {
-          data += chunk
-        })
-        req.on('end', function () {
-          res.end(data)
-        })
-      })
-      server.listen(6767, done)
-    })
-
-    it('5', function (done) {
-      var req = request({
-        url: 'http://localhost:6767',
-        headers: {
-          'content-length': 4
-        },
-        body: Buffer('poop'),
-        callback: function (err, res, body) {
-          body.should.equal('poop')
-          done()
-        }
-      })
-    })
-
-    after(function (done) {
-      server.close(done)
-    })
-  })
-
-  describe('buffer - content-length', function () {
+  describe('body buffer + callback', function () {
     var server
     before(function (done) {
       server = http.createServer()
@@ -272,7 +199,7 @@ describe('- body', function () {
     })
   })
 
-  describe('string - content-length', function () {
+  describe('body string + callback', function () {
     var server
     before(function (done) {
       server = http.createServer()
@@ -305,7 +232,7 @@ describe('- body', function () {
     })
   })
 
-  describe('array - content-length', function () {
+  describe('body array + callback', function () {
     var server
     before(function (done) {
       server = http.createServer()
