@@ -71,10 +71,6 @@ function request (_options) {
     log(req)
   }
 
-  req.on('pipe', function (src) {
-    req._src = src
-  })
-
   req.once('init', init)
   process.nextTick(init)
 

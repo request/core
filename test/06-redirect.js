@@ -198,9 +198,93 @@ describe('- redirect', function () {
           done()
         }
       })
+    })
 
-      req.on('response', function (res) {
-        console.client(res.headers)
+    after(function (done) {
+      server.close(done)
+    })
+  })
+
+  describe('body file', function () {
+    var server
+    before(function (done) {
+      server = http.createServer()
+      server.on('request', function (req, res) {
+        if (req.url === '/redirect') {
+          console.server('redirect %o', req.headers)
+          res.writeHead(301, {'location': '/'})
+          // https://github.com/hapijs/wreck/issues/104
+          // https://github.com/nodejs/node/issues/2821
+          // https://github.com/nodejs/node/pull/2824
+          process.nextTick(function () {
+            res.end()
+          })
+        }
+        else {
+          console.server('response %o', req.headers)
+          req.on('data', function (chunk) {
+            console.server('data')
+          })
+          req.pipe(res)
+        }
+      })
+      server.listen(6767, done)
+    })
+
+    it('4', function (done) {
+      var input = fs.readFileSync(image2)
+
+      var req = request({
+        url: 'http://localhost:6767/redirect',
+        body: input,
+        encoding: 'binary',
+        redirect: true,
+        callback: function (err, res, body) {
+          fs.writeFileSync(tmp, body)
+          var stats = fs.statSync(tmp)
+          stats.size.should.equal(22025)
+          done()
+        }
+      })
+    })
+
+    after(function (done) {
+      server.close(done)
+    })
+  })
+
+  describe('body buffer', function () {
+    var server
+    before(function (done) {
+      server = http.createServer()
+      server.on('request', function (req, res) {
+        if (req.url === '/redirect') {
+          console.server('redirect %o', req.headers)
+          res.writeHead(301, {'location': '/'})
+          res.end()
+        }
+        else {
+          console.server('response %o', req.headers)
+          req.on('data', function (chunk) {
+            console.server('data')
+          })
+          req.pipe(res)
+        }
+      })
+      server.listen(6767, done)
+    })
+
+    it('5', function (done) {
+      var input = fs.readFileSync(image2)
+
+      var req = request({
+        url: 'http://localhost:6767/redirect',
+        body: Buffer('poop'),
+        redirect: true,
+        callback: function (err, res, body) {
+          body.should.equal('poop')
+          done()
+        }
       })
     })
 
@@ -215,29 +299,28 @@ describe('- redirect', function () {
       server = http.createServer()
       server.on('request', function (req, res) {
         if (req.url === '/redirect') {
-          console.server(req.headers, 'redirect')
+          console.server('redirect %o', req.headers)
           res.writeHead(301, {'location': '/'})
           res.end()
-        } else {
-          console.server(req.headers, 'response')
-          var input = fs.createReadStream(image2, {highWaterMark: 1024})
-          input.on('data', function (data) {
+        }
+        else {
+          console.server('response %o', req.headers)
+          req.on('data', function (data) {
             console.server('data')
           })
-          input.pipe(res)
+          req.pipe(res)
         }
       })
       server.listen(6767, done)
     })
 
-    it.skip('4 - not implemented', function (done) {
+    it('6 - not implemented', function (done) {
       var input = fs.createReadStream(image2, {highWaterMark: 1024})
         , output = fs.createWriteStream(tmp)
 
       var req = request({
         url: 'http://localhost:6767/redirect',
         redirect: true,
-        encoding: 'binary',
         end: false
       })
 
@@ -259,12 +342,8 @@ describe('- redirect', function () {
           output.end()
         }
       })
-      req.on('response', function (res) {
-        console.client(res.headers)
-      })
 
-      output.on('end', function () {
-        fs.writeFileSync(tmp, body)
+      output.on('close', function () {
         var stats = fs.statSync(tmp)
         stats.size.should.equal(22025)
         done()
