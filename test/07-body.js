@@ -137,6 +137,72 @@ describe('- body', function () {
     })
   })
 
+  describe('body file + pipe output', function () {
+    var server
+    before(function (done) {
+      server = http.createServer()
+      server.on('request', function (req, res) {
+        console.server(req.headers)
+        req.pipe(res)
+      })
+      server.listen(6767, done)
+    })
+
+    it('3', function (done) {
+      var input = fs.readFileSync(image2)
+        , output = fs.createWriteStream(tmp)
+
+      var req = request({
+        url: 'http://localhost:6767',
+        body: input
+      })
+
+      req.pipe(output)
+
+      output.on('close', function () {
+        var stats = fs.statSync(tmp)
+        stats.size.should.equal(22025)
+        done()
+      })
+    })
+
+    after(function (done) {
+      server.close(done)
+    })
+  })
+
+  describe('body file + callback', function () {
+    var server
+    before(function (done) {
+      server = http.createServer()
+      server.on('request', function (req, res) {
+        console.server(req.headers)
+        req.pipe(res)
+      })
+      server.listen(6767, done)
+    })
+
+    it('4', function (done) {
+      var input = fs.readFileSync(image2)
+
+      var req = request({
+        url: 'http://localhost:6767',
+        encoding: 'binary',
+        body: input,
+        callback: function (err, res, body) {
+          fs.writeFileSync(tmp, body)
+          var stats = fs.statSync(tmp)
+          stats.size.should.equal(22025)
+          done()
+        }
+      })
+    })
+
+    after(function (done) {
+      server.close(done)
+    })
+  })
+
   describe('buffer + content-length', function () {
     var server
     before(function (done) {
@@ -154,7 +220,7 @@ describe('- body', function () {
       server.listen(6767, done)
     })
 
-    it('3', function (done) {
+    it('5', function (done) {
       var req = request({
         url: 'http://localhost:6767',
         headers: {
@@ -190,7 +256,7 @@ describe('- body', function () {
       server.listen(6767, done)
     })
 
-    it('4', function (done) {
+    it('6', function (done) {
       var req = request({
         url: 'http://localhost:6767',
         body: Buffer('poop'),
@@ -223,7 +289,7 @@ describe('- body', function () {
       server.listen(6767, done)
     })
 
-    it('5', function (done) {
+    it('7', function (done) {
       var req = request({
         url: 'http://localhost:6767',
         body: 'poop',
@@ -250,7 +316,7 @@ describe('- body', function () {
       server.listen(6767, done)
     })
 
-    it('6', function (done) {
+    it('8', function (done) {
       var req = request({
         url: 'http://localhost:6767',
         body: ['amazing', 'wqw', 'poop'],
