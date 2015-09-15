@@ -17,7 +17,7 @@ console.client = debug('client')
 
 describe('- duplex-stream', function () {
 
-  describe('pipe duplex stream', function () {
+  describe('pipe: fs + request + fs', function () {
     var server
     before(function (done) {
       server = http.createServer()
@@ -57,7 +57,7 @@ describe('- duplex-stream', function () {
     })
   })
 
-  describe('pipe two request streams', function () {
+  describe('pipe: fs + request + request + fs', function () {
     var server
     before(function (done) {
       server = http.createServer()
@@ -96,7 +96,53 @@ describe('- duplex-stream', function () {
     })
   })
 
-  describe('manual read to pipe', function () {
+  describe('pipe: request + request + fs', function () {
+    var server
+    before(function (done) {
+      server = http.createServer()
+      server.on('request', function (req, res) {
+        if (req.url === '/download') {
+          console.server('download %o', req.headers)
+          var image = fs.createReadStream(image2, {highWaterMark: 1024})
+          image.pipe(res)
+        }
+        else {
+          console.server('upload %o', req.headers)
+          req.pipe(res)
+        }
+      })
+      server.listen(6767, done)
+    })
+
+    it('2', function (done) {
+      var download = request({
+        url: 'http://localhost:6767/download',
+        encoding: 'binary'
+      })
+      var upload = request({
+        url: 'http://localhost:6767',
+        encoding: 'binary'
+      })
+      var output = fs.createWriteStream(tmp)
+
+      download
+        .pipe(upload)
+        .pipe(output)
+
+      output.on('close', function () {
+        var stats = fs.statSync(tmp)
+        stats.size.should.equal(22025)
+        done()
+      })
+    })
+
+    after(function (done) {
+      server.close(done)
+    })
+  })
+
+
+  describe('manual read + pipe to fs', function () {
     var server
     before(function (done) {
       server = http.createServer()
@@ -107,7 +153,7 @@ describe('- duplex-stream', function () {
       server.listen(6767, done)
     })
 
-    it('2', function (done) {
+    it('3', function (done) {
       var input = fs.createReadStream(image2, {highWaterMark: 1024})
         , output = fs.createWriteStream(tmp)
 
@@ -151,7 +197,7 @@ describe('- duplex-stream', function () {
       server.listen(6767, done)
     })
 
-    it('3', function (done) {
+    it('4', function (done) {
       var input = fs.createReadStream(image2, {highWaterMark: 1024})
         , output = fs.createWriteStream(tmp)
 
