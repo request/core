@@ -5,6 +5,7 @@ var fs = require('fs')
 var should = require('should')
   , debug = require('debug')
   , formidable = require('formidable')
+  , _request = require('request')
 var request = require('../index')
 
 var image0 = path.join(__dirname, './fixtures/cat0.png')
@@ -18,7 +19,7 @@ console.client = debug('client')
 
 describe('- content-length', function () {
 
-  describe('pipe + contentLength + pipe', function () {
+  describe('pipe fs + contentLength + pipe fs', function () {
     var server
     before(function (done) {
       server = http.createServer()
@@ -55,7 +56,104 @@ describe('- content-length', function () {
     })
   })
 
-  describe('body file stream + contentLength + pipe', function () {
+  describe('pipe request + contentLength + pipe fs', function () {
+    var server
+    before(function (done) {
+      server = http.createServer()
+      server.on('request', function (req, res) {
+        if (req.url === '/download') {
+          console.server('download %o', req.headers)
+          var image = fs.createReadStream(image2, {highWaterMark: 1024})
+          res.writeHead(200, {'content-length': 22025})
+          image.pipe(res)
+        }
+        else {
+          console.server('upload %o', req.headers)
+          parseInt(req.headers['content-length']).should.equal(22025)
+          req.pipe(res)
+        }
+      })
+      server.listen(6767, done)
+    })
+
+    it('1', function (done) {
+      var download = _request({
+        url: 'http://localhost:6767/download',
+        encoding: null
+      })
+      var upload = request({
+        url: 'http://localhost:6767',
+        contentLength: true,
+        encoding: 'binary'
+      })
+      var output = fs.createWriteStream(tmp)
+
+      download
+        .pipe(upload)
+        .pipe(output)
+
+      output.on('close', function () {
+        var stats = fs.statSync(tmp)
+        stats.size.should.equal(22025)
+        done()
+      })
+    })
+
+    after(function (done) {
+      server.close(done)
+    })
+  })
+
+  describe('pipe request-next + contentLength + pipe fs', function () {
+    var server
+    before(function (done) {
+      server = http.createServer()
+      server.on('request', function (req, res) {
+        if (req.url === '/download') {
+          console.server('download %o', req.headers)
+          var image = fs.createReadStream(image2, {highWaterMark: 1024})
+          res.writeHead(200, {'content-length': 22025})
+          image.pipe(res)
+        }
+        else {
+          console.server('upload %o', req.headers)
+          parseInt(req.headers['content-length']).should.equal(22025)
+          req.pipe(res)
+        }
+      })
+      server.listen(6767, done)
+    })
+
+    it('2', function (done) {
+      var download = request({
+        url: 'http://localhost:6767/download',
+        encoding: 'binary'
+      })
+      var upload = request({
+        url: 'http://localhost:6767',
+        contentLength: true,
+        encoding: 'binary'
+      })
+      var output = fs.createWriteStream(tmp)
+
+      download
+        .pipe(upload)
+        .pipe(output)
+
+      output.on('close', function () {
+        var stats = fs.statSync(tmp)
+        stats.size.should.equal(22025)
+        done()
+      })
+    })
+
+    after(function (done) {
+      server.close(done)
+    })
+  })
+
+
+  describe('body file stream + contentLength + pipe fs', function () {
     var server
     before(function (done) {
       server = http.createServer()
@@ -67,7 +165,7 @@ describe('- content-length', function () {
       server.listen(6767, done)
     })
 
-    it('1', function (done) {
+    it('3', function (done) {
       var input = fs.createReadStream(image2, {highWaterMark: 1024})
         , output = fs.createWriteStream(tmp)
 
@@ -91,6 +189,103 @@ describe('- content-length', function () {
     })
   })
 
+  describe('body request stream + contentLength + pipe fs', function () {
+    var server
+    before(function (done) {
+      server = http.createServer()
+      server.on('request', function (req, res) {
+        if (req.url === '/download') {
+          console.server('download %o', req.headers)
+          var image = fs.createReadStream(image2, {highWaterMark: 1024})
+          res.writeHead(200, {'content-length': 22025})
+          image.pipe(res)
+        }
+        else {
+          console.server('upload %o', req.headers)
+          parseInt(req.headers['content-length']).should.equal(22025)
+          req.pipe(res)
+        }
+      })
+      server.listen(6767, done)
+    })
+
+    it('4', function (done) {
+      var download = _request({
+        url: 'http://localhost:6767/download',
+        encoding: null
+      })
+      var upload = request({
+        url: 'http://localhost:6767',
+        body: download,
+        contentLength: true,
+        encoding: 'binary'
+      })
+      var output = fs.createWriteStream(tmp)
+
+      upload
+        .pipe(output)
+
+      output.on('close', function () {
+        var stats = fs.statSync(tmp)
+        stats.size.should.equal(22025)
+        done()
+      })
+    })
+
+    after(function (done) {
+      server.close(done)
+    })
+  })
+
+  describe('body request-next stream + contentLength + pipe fs', function () {
+    var server
+    before(function (done) {
+      server = http.createServer()
+      server.on('request', function (req, res) {
+        if (req.url === '/download') {
+          console.server('download %o', req.headers)
+          var image = fs.createReadStream(image2, {highWaterMark: 1024})
+          res.writeHead(200, {'content-length': 22025})
+          image.pipe(res)
+        }
+        else {
+          console.server('upload %o', req.headers)
+          parseInt(req.headers['content-length']).should.equal(22025)
+          req.pipe(res)
+        }
+      })
+      server.listen(6767, done)
+    })
+
+    it('5', function (done) {
+      var download = request({
+        url: 'http://localhost:6767/download',
+        encoding: null
+      })
+      var upload = request({
+        url: 'http://localhost:6767',
+        body: download,
+        contentLength: true,
+        encoding: 'binary'
+      })
+      var output = fs.createWriteStream(tmp)
+
+      upload
+        .pipe(output)
+
+      output.on('close', function () {
+        var stats = fs.statSync(tmp)
+        stats.size.should.equal(22025)
+        done()
+      })
+    })
+
+    after(function (done) {
+      server.close(done)
+    })
+  })
+
+
   describe('body file buffer + contentLength + callback', function () {
     var server
     before(function (done) {
@@ -103,7 +298,7 @@ describe('- content-length', function () {
       server.listen(6767, done)
     })
 
-    it('2', function (done) {
+    it('6', function (done) {
       var input = fs.readFileSync(image2)
 
       var req = request({
@@ -143,7 +338,7 @@ describe('- content-length', function () {
       server.listen(6767, done)
     })
 
-    it('3', function (done) {
+    it('7', function (done) {
       var req = request({
         url: 'http://localhost:6767',
         body: 'poop',
@@ -172,7 +367,7 @@ describe('- content-length', function () {
       server.listen(6767, done)
     })
 
-    it('4', function (done) {
+    it('8', function (done) {
       var req = request({
         url: 'http://localhost:6767',
         body: ['amazing', 'wqw', 'poop'],
@@ -189,7 +384,8 @@ describe('- content-length', function () {
     })
   })
 
-  describe('multipart/related - stream one file', function () {
+
+  describe('multipart/related + file stream', function () {
     var server
     before(function (done) {
       server = http.createServer()
@@ -205,7 +401,7 @@ describe('- content-length', function () {
       server.listen(6767, done)
     })
 
-    it('5', function (done) {
+    it('9', function (done) {
       var input = fs.createReadStream(image2, {highWaterMark: 1024})
 
       var req = request({
@@ -233,22 +429,23 @@ describe('- content-length', function () {
     })
   })
 
-  describe.skip('multipart/related - request one file', function () {
+  describe('multipart/related + request-next stream', function () {
     var server
     before(function (done) {
       server = http.createServer()
       server.on('request', function (req, res) {
         if (req.url === '/download') {
-          console.server(req.headers, 'download')
-          parseInt(req.headers['content-length']).should.equal(22134)
+          console.server('download %o', req.headers)
           var image = fs.createReadStream(image2, {highWaterMark: 1024})
           image.on('data', function (chunk) {
             console.server('download chunk')
           })
+          res.writeHead(200, {'content-length': 22025})
           image.pipe(res)
         }
         else {
-          console.server(req.headers, 'upload')
+          console.server('upload %o', req.headers)
+          parseInt(req.headers['content-length']).should.equal(22134)
           var form = new formidable.IncomingForm()
           form.parse(req, function (err, fields, files) {})
           form.onPart = function (part) {
@@ -262,7 +459,7 @@ describe('- content-length', function () {
       server.listen(6767, done)
     })
 
-    it('6', function (done) {
+    it('10', function (done) {
       var input = request({
         method: 'GET',
         url: 'http://localhost:6767/download',
@@ -306,7 +503,7 @@ describe('- content-length', function () {
       server.listen(6767, done)
     })
 
-    it('7', function (done) {
+    it('11', function (done) {
       var input = fs.createReadStream(image2, {highWaterMark: 1024})
         , output = fs.createWriteStream(tmp)
 
@@ -349,7 +546,7 @@ describe('- content-length', function () {
       server.listen(6767, done)
     })
 
-    it('8', function (done) {
+    it('12', function (done) {
       var req = request({
         url: 'http://localhost:6767',
         headers: {
