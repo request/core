@@ -66,6 +66,19 @@ function request (_options) {
     }
   }
 
+  if (options.qs) {
+    var qs = require('_qs')
+    qs(req, options)
+  }
+  if (options.form) {
+    var form = require('form')
+    form(req, options)
+  }
+  if (options.json) {
+    var json = require('json')
+    json(req, options)
+  }
+
   if (process.env.DEBUG) {
     var log = require('log')
     log(req)

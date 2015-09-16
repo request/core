@@ -1,12 +1,18 @@
 [
   "url",
   "uri",
+
   "gzip",
   "encoding",
-  "callback",
-  "redirect",
+
+  "qs",
+  "form",
+  "json",
   "body",
   "multipart",
+  "callback",
+
   "contentLength",
+  "redirect",
   "end"
 ]
