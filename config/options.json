@@ -12,6 +12,8 @@
   "multipart",
   "callback",
 
+  "auth",
+
   "contentLength",
   "redirect",
   "end"

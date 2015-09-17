@@ -79,6 +79,11 @@ function request (_options) {
     json(req, options)
   }
 
+  if (options.auth) {
+    var auth = require('auth')
+    auth(req, options)
+  }
+
   if (process.env.DEBUG) {
     var log = require('log')
     log(req)
