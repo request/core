@@ -213,12 +213,7 @@ describe('- redirect', function () {
         if (req.url === '/redirect') {
           console.server('redirect %o', req.headers)
           res.writeHead(301, {'location': '/'})
-          // https://github.com/hapijs/wreck/issues/104
-          // https://github.com/nodejs/node/issues/2821
-          // https://github.com/nodejs/node/pull/2824
-          process.nextTick(function () {
-            res.end()
-          })
+          res.end()
         }
         else {
           console.server('response %o', req.headers)
