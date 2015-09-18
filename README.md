@@ -46,6 +46,7 @@
   - `function(err, res, body)` by default the response buffer is decoded into string using `utf8`. Set the `encoding` property to `binary` if you expect binary data, or any other specific encoding
 - **redirect**
   - `true`
+  - `{all: true, max: 5}`
 - **body**
   - `Stream`
   - `Buffer`
@@ -72,6 +73,27 @@
   - `contentLength(req, options)`
 - **end** enabled by default
   - `false` prevent request ending on nextTick
+- **qs**
+  - `Object`
+  - `String`
+- **form**
+  - `Object`
+  - `String`
+- **json**
+  - `Object`
+  - `String`
+- **auth**
+  - `{user: '', pass: '', sendImmediately: false}`
+  - `{bearer: ''}`
+- **hawk**
+- **httpSignature**
+- **aws**
+- **oauth**
+
+
+## Generated Options
+
+- **uri** contains the parsed URL
 
 
 ## Modules

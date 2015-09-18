@@ -79,11 +79,6 @@ function request (_options) {
     json(req, options)
   }
 
-  if (options.auth) {
-    var auth = require('auth')
-    auth(req, options)
-  }
-
   if (process.env.DEBUG) {
     var log = require('log')
     log(req)
@@ -111,6 +106,15 @@ function request (_options) {
     function _init () {
       if (options.headers.get('content-length') === undefined) {
         options.headers.set('transfer-encoding', 'chunked')
+      }
+
+      if (options.auth || options.hawk || options.httpSignature || options.aws) {
+        var auth = require('auth')
+        auth(req, options)
+      }
+      if (options.oauth) {
+        var oauth = require('oauth')
+        oauth(req, options)
       }
 
       req.init(utils.filter(options))
