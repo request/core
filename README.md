@@ -46,7 +46,7 @@
   - `function(err, res, body)` by default the response buffer is decoded into string using `utf8`. Set the `encoding` property to `binary` if you expect binary data, or any other specific encoding
 - **redirect**
   - `true`
-  - `{all: true, max: 5}`
+  - `{all: true, max: 5, removeReferer}`
 - **body**
   - `Stream`
   - `Buffer`
@@ -94,6 +94,8 @@
 ## Generated Options
 
 - **uri** contains the parsed URL
+- **redirect** is converted to object containing all possible options
+  - contains *followed* key
 
 
 ## Modules
