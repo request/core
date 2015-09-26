@@ -124,17 +124,9 @@ function request (_options) {
         body(req, options)
       }
 
-      if (options.end === false) return
-
-      if (
-        // not started
-        !req._started &&
-        // not piped
-        !req._src &&
-        // not keep-alive
-        (!options.agent || !options.agent.keepAlive)
-      ) {
-        req.end()
+      if (options.end === undefined) {
+        var end = require('end')
+        end(req, options)
       }
     }
   }
