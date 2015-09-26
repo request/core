@@ -309,7 +309,7 @@ describe('- redirect', function () {
       server.listen(6767, done)
     })
 
-    it('6 - not implemented', function (done) {
+    it('6', function (done) {
       var input = fs.createReadStream(image2, {highWaterMark: 1024})
         , output = fs.createWriteStream(tmp)
 
