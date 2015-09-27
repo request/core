@@ -120,7 +120,7 @@ function request (_options) {
         body(req, options)
       }
 
-      if (options.end === undefined) {
+      if (options.end) {
         var end = require('end')
         end(req, options)
       }

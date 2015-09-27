@@ -8,7 +8,7 @@ var should = require('should')
   , hawk = require('hawk')
   , httpSignature = require('http-signature')
   , oauth = require('oauth-sign')
-var request = require('../index')
+var request = require('request-client')
 
 var htpasswd = path.join(__dirname, './fixtures/.htpasswd')
   , htpasswd_digest = path.join(__dirname, './fixtures/.htpasswd_digest')
