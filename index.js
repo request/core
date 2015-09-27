@@ -108,13 +108,9 @@ function request (_options) {
         options.headers.set('transfer-encoding', 'chunked')
       }
 
-      if (options.auth || options.hawk || options.httpSignature || options.aws) {
+      if (options.auth || options.oauth || options.hawk || options.httpSignature || options.aws) {
         var auth = require('auth')
         auth(req, options)
-      }
-      if (options.oauth) {
-        var oauth = require('oauth')
-        oauth(req, options)
       }
 
       req.init(utils.filter(options))
