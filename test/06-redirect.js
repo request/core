@@ -118,6 +118,63 @@ describe('- redirect', function () {
     })
   })
 
+  describe('stream file + gzip + multiple redirects', function () {
+    var server
+    before(function (done) {
+      server = http.createServer()
+      server.on('request', function (req, res) {
+        if (req.url === '/redirect1') {
+          console.server(req.headers, 'redirect')
+          res.writeHead(301, {'location': '/redirect2'})
+          res.end()
+        }
+        else if (req.url === '/redirect2') {
+          console.server(req.headers, 'redirect')
+          res.writeHead(301, {'location': '/'})
+          res.end()
+        }
+        else {
+          console.server(req.headers, 'response')
+          req.on('data', function (data) {
+            console.server('data')
+          })
+          res.writeHead(200, {'content-encoding': 'deflate'})
+          req.pipe(zlib.createDeflate()).pipe(res)
+        }
+      })
+      server.listen(6767, done)
+    })
+
+    it('2', function (done) {
+      var input = fs.createReadStream(image2, {highWaterMark: 1024})
+        , output = fs.createWriteStream(tmp)
+
+      var req = request({
+        url: 'http://localhost:6767/redirect1',
+        gzip: true,
+        redirect: true
+      })
+
+      input
+        .pipe(req)
+        .pipe(output)
+
+      req.on('response', function (res) {
+        console.client(res.headers)
+      })
+
+      output.on('close', function () {
+        var stats = fs.statSync(tmp)
+        stats.size.should.equal(22025)
+        done()
+      })
+    })
+
+    after(function (done) {
+      server.close(done)
+    })
+  })
+
   describe('stream file + callback', function () {
     var server
     before(function (done) {
@@ -138,7 +195,7 @@ describe('- redirect', function () {
       server.listen(6767, done)
     })
 
-    it('2', function (done) {
+    it('3', function (done) {
       var input = fs.createReadStream(image2, {highWaterMark: 1024})
 
       var req = request({
@@ -186,7 +243,7 @@ describe('- redirect', function () {
       server.listen(6767, done)
     })
 
-    it('3', function (done) {
+    it('4', function (done) {
       var req = request({
         url: 'http://localhost:6767/redirect',
         redirect: true,
@@ -226,7 +283,7 @@ describe('- redirect', function () {
       server.listen(6767, done)
     })
 
-    it('4', function (done) {
+    it('5', function (done) {
       var input = fs.readFileSync(image2)
 
       var req = request({
@@ -269,7 +326,7 @@ describe('- redirect', function () {
       server.listen(6767, done)
     })
 
-    it('5', function (done) {
+    it('6', function (done) {
       var input = fs.readFileSync(image2)
 
       var req = request({
@@ -309,7 +366,7 @@ describe('- redirect', function () {
       server.listen(6767, done)
     })
 
-    it('6', function (done) {
+    it('7', function (done) {
       var input = fs.createReadStream(image2, {highWaterMark: 1024})
         , output = fs.createWriteStream(tmp)
 

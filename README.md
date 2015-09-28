@@ -10,6 +10,7 @@
   - `_client` http or https module
 
   - `_redirect` boolean indicating that the client is going to be redirected
+  - `_redirected` boolean indicating that the client is been redirected at least once
   - `_src` the input read stream, usually from pipe
   - `_chunks` Array - the first chunk read from the input read stream
   - `_ended` whether the outgoing request has ended
