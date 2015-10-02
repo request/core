@@ -5,7 +5,7 @@ var fs = require('fs')
 var should = require('should')
   , debug = require('debug')
   , qs = require('qs')
-var request = require('request-client')
+var request = require('@http/client')
 
 var image0 = path.join(__dirname, './fixtures/cat0.png')
   , image1 = path.join(__dirname, './fixtures/cat1.png')
