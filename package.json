@@ -1,5 +1,5 @@
 {
-  "name": "request-next",
+  "name": "@http/core",
   "version": "0.0.0",
   "description": "HTTP Client Library",
 
@@ -9,14 +9,14 @@
     "client"
   ],
 
-  "license": "MIT",
-  "homepage": "https://github.com/simov/request-next",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/node-http/core",
 
   "author": "Simeon Velichkov <simeonvelichkov@gmail.com> (http://simov.github.io)",
 
   "repository": {
     "type": "git",
-    "url": "https://github.com/simov/request-next.git"
+    "url": "https://github.com/node-http/core.git"
   },
 
   "bundledDependencies": {
@@ -37,10 +37,9 @@
   "files": [],
 
   "scripts": {
-    "test"      : "npm run lint-lib && npm run lint-test && npm run test-ci",
-    "test-ci"   : "major=$(node --version | cut -b 2-2) && minor=$(node --version | cut -b 4-5) && if [ $major -eq 0 ] && [ $minor -ge 12 ]; then mocha --harmony --recursive test/; elif [ $major -ge 1 ]; then mocha --recursive test/; else mocha test/ test/flow/ test/consumer/express/ test/consumer/hapi/; fi",
-    "test-cov"  : "istanbul cover _mocha test/ test/flow/ test/consumer/express/ test/consumer/hapi/",
-    "lint-lib"  : "eslint lib/ && echo Lint lib passed",
-    "lint-test" : "eslint --config test/.eslintrc test/ && echo Lint test passed"
+    "test"      : "npm run lint && npm run test-ci",
+    "test-ci"   : "mocha --recursive test/",
+    "test-cov"  : "istanbul cover _mocha test/",
+    "lint"      : "eslint && echo Lint passed"
   }
 }

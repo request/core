@@ -120,5 +120,13 @@ $ DEBUG=req,res node app.js
 ```
 
 
+## Notice
+
+This module may contain code snippets initially implemented in [request][request] by [request contributors][request-contributors].
+
+
+  [request]: https://github.com/request/request
+  [request-contributors]: https://github.com/request/request/graphs/contributors
+
   [iconv-lite]: https://www.npmjs.com/package/iconv-lite
   [zlib]: https://iojs.org/api/zlib.html
