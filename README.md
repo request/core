@@ -22,10 +22,12 @@
 - **init** should be private I guess
 - **request** req, options
 - **redirect** res
+- **options** emit *@http/core* options
+- **callback** emit raw response body, either *Buffer* or *String*
 
 ## req/res
 
-- **headers** is instance of the *Headers* module
+- **headers** is instance of the *@http/headers* module
 
 
 ## Options
@@ -99,21 +101,13 @@
   - contains *followed* key
 
 
-## Modules
-
-- **http-duplex** http duplex stream
-- **gzip** gzip stream
-- **encoding** encoding stream
-- **callback** buffer response
-- **redirect**
-- **body**
-
-
 ## Logger
 
 - **req**
 - **res**
 - **options**
+- **options:raw**
+- **body**
 
 ```bash
 $ DEBUG=req,res node app.js
