@@ -241,6 +241,7 @@ describe('- auth', function () {
       'GET',
       'http://localhost:6767/',
       {
+        a: 1,
         oauth_callback: 'http://localhost:6767/callback',
         oauth_consumer_key: 'GDdmIQH6jhtmLUypg82g',
         oauth_nonce: 'QP70eNmVz8jvdPevU3oJD2AfF7R7odC2XJcn4XlZJqk',
@@ -263,6 +264,7 @@ describe('- auth', function () {
     it('6', function (done) {
       var req = request({
         url: 'http://localhost:6767',
+        qs: {a:1},
         oauth: {
           consumer_key: 'GDdmIQH6jhtmLUypg82g',
           consumer_secret: 'MCD8BKwGdgPHvAuvgvz4EQpqDAtx89grbuNMRd7Eh98',
