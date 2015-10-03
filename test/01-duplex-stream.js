@@ -33,7 +33,7 @@ describe('- duplex-stream', function () {
         , output = fs.createWriteStream(tmp)
 
       var req = request({
-        method: 'GET',
+        method: 'POST',
         host: 'localhost',
         port: 6767,
         path: '/',
@@ -73,9 +73,11 @@ describe('- duplex-stream', function () {
         , output = fs.createWriteStream(tmp)
 
       var req1 = request({
+        method: 'POST',
         url: 'http://localhost:6767'
       })
       var req2 = request({
+        method: 'POST',
         url: 'http://localhost:6767'
       })
 
@@ -120,6 +122,7 @@ describe('- duplex-stream', function () {
         encoding: 'binary'
       })
       var upload = request({
+        method: 'POST',
         url: 'http://localhost:6767',
         encoding: 'binary'
       })
@@ -202,6 +205,7 @@ describe('- duplex-stream', function () {
         , output = fs.createWriteStream(tmp)
 
       var req = request({
+        method: 'POST',
         url: 'http://localhost:6767',
         end: false
       })
