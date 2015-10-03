@@ -18,6 +18,11 @@ function request (_options) {
     utils.response(res)
   })
 
+  if (process.env.DEBUG) {
+    var log = require('./lib/log')
+    log(req)
+  }
+
   if (options.redirect) {
     var redirect = require('./lib/options/redirect')
     redirect(req, options)
@@ -78,11 +83,6 @@ function request (_options) {
   if (options.json) {
     var json = require('./lib/options/json')
     json(req, options)
-  }
-
-  if (process.env.DEBUG) {
-    var log = require('./lib/log')
-    log(req)
   }
 
   req.once('init', init)
