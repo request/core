@@ -94,8 +94,8 @@
 
 ## Generated Options
 
-- **uri** contains the parsed URL
-- **redirect** is converted to object containing all possible options
+- **url** contains the parsed URL
+- **redirect** should be converted to object containing all possible options
   - contains *followed* key
 
 
