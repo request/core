@@ -48,10 +48,11 @@ describe('- agent', function () {
       })
 
       var req = request({
-        method: 'GET',
+        method: 'POST',
         url: 'http://localhost:6767',
         agent: agent,
         encoding: 'binary',
+        end: false,
         callback: function (err, res, body) {
           fs.writeFileSync(tmp, body)
           var stats = fs.statSync(tmp)
