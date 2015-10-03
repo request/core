@@ -69,9 +69,9 @@
       options: {filename: '', contentType: '', knownLength: 0}
     }}
     ```
-- **contentLength**
+- **length**
   - `true` defaults to `false` if omitted
-  - `contentLength(req, options)`
+  - `length(req, options)`
 - **end** enabled by default
   - `false` prevent request ending on nextTick
 - **qs**

@@ -19,7 +19,7 @@ console.client = debug('client')
 
 describe('- content-length', function () {
 
-  describe('pipe fs + contentLength + pipe fs', function () {
+  describe('pipe fs + length + pipe fs', function () {
     var server
     before(function (done) {
       server = http.createServer()
@@ -37,7 +37,7 @@ describe('- content-length', function () {
 
       var req = request({
         url: 'http://localhost:6767',
-        contentLength: true
+        length: true
       })
 
       input
@@ -56,7 +56,7 @@ describe('- content-length', function () {
     })
   })
 
-  describe('pipe request + contentLength + pipe fs', function () {
+  describe('pipe request + length + pipe fs', function () {
     var server
     before(function (done) {
       server = http.createServer()
@@ -83,7 +83,7 @@ describe('- content-length', function () {
       })
       var upload = request({
         url: 'http://localhost:6767',
-        contentLength: true,
+        length: true,
         encoding: 'binary'
       })
       var output = fs.createWriteStream(tmp)
@@ -104,7 +104,7 @@ describe('- content-length', function () {
     })
   })
 
-  describe('pipe request-next + contentLength + pipe fs', function () {
+  describe('pipe request-next + length + pipe fs', function () {
     var server
     before(function (done) {
       server = http.createServer()
@@ -131,7 +131,7 @@ describe('- content-length', function () {
       })
       var upload = request({
         url: 'http://localhost:6767',
-        contentLength: true,
+        length: true,
         encoding: 'binary'
       })
       var output = fs.createWriteStream(tmp)
@@ -153,7 +153,7 @@ describe('- content-length', function () {
   })
 
 
-  describe('body file stream + contentLength + pipe fs', function () {
+  describe('body file stream + length + pipe fs', function () {
     var server
     before(function (done) {
       server = http.createServer()
@@ -172,7 +172,7 @@ describe('- content-length', function () {
       var req = request({
         url: 'http://localhost:6767',
         body: input,
-        contentLength: true
+        length: true
       })
 
       req.pipe(output)
@@ -189,7 +189,7 @@ describe('- content-length', function () {
     })
   })
 
-  describe('body request stream + contentLength + pipe fs', function () {
+  describe('body request stream + length + pipe fs', function () {
     var server
     before(function (done) {
       server = http.createServer()
@@ -217,7 +217,7 @@ describe('- content-length', function () {
       var upload = request({
         url: 'http://localhost:6767',
         body: download,
-        contentLength: true,
+        length: true,
         encoding: 'binary'
       })
       var output = fs.createWriteStream(tmp)
@@ -237,7 +237,7 @@ describe('- content-length', function () {
     })
   })
 
-  describe('body request-next stream + contentLength + pipe fs', function () {
+  describe('body request-next stream + length + pipe fs', function () {
     var server
     before(function (done) {
       server = http.createServer()
@@ -265,7 +265,7 @@ describe('- content-length', function () {
       var upload = request({
         url: 'http://localhost:6767',
         body: download,
-        contentLength: true,
+        length: true,
         encoding: 'binary'
       })
       var output = fs.createWriteStream(tmp)
@@ -286,7 +286,7 @@ describe('- content-length', function () {
   })
 
 
-  describe('body file buffer + contentLength + callback', function () {
+  describe('body file buffer + length + callback', function () {
     var server
     before(function (done) {
       server = http.createServer()
@@ -305,7 +305,7 @@ describe('- content-length', function () {
         url: 'http://localhost:6767',
         body: input,
         encoding: 'binary',
-        contentLength: true,
+        length: true,
         callback: function (err, res, body) {
           fs.writeFileSync(tmp, body)
           var stats = fs.statSync(tmp)
@@ -320,7 +320,7 @@ describe('- content-length', function () {
     })
   })
 
-  describe('body string + contentLength + callback', function () {
+  describe('body string + length + callback', function () {
     var server
     before(function (done) {
       server = http.createServer()
@@ -342,7 +342,7 @@ describe('- content-length', function () {
       var req = request({
         url: 'http://localhost:6767',
         body: 'poop',
-        contentLength: true,
+        length: true,
         callback: function (err, res, body) {
           body.should.equal('poop')
           done()
@@ -355,7 +355,7 @@ describe('- content-length', function () {
     })
   })
 
-  describe('body array + contentLength + callback', function () {
+  describe('body array + length + callback', function () {
     var server
     before(function (done) {
       server = http.createServer()
@@ -371,7 +371,7 @@ describe('- content-length', function () {
       var req = request({
         url: 'http://localhost:6767',
         body: ['amazing', 'wqw', 'poop'],
-        contentLength: true,
+        length: true,
         callback: function (err, res, body) {
           body.toString().should.equal('amazingwqwpoop')
           done()
@@ -414,7 +414,7 @@ describe('- content-length', function () {
             body: input
           }
         ],
-        contentLength: true,
+        length: true,
         callback: function (err, res, body) {
           fs.writeFileSync(tmp, body)
           var stats = fs.statSync(tmp)
@@ -476,7 +476,7 @@ describe('- content-length', function () {
             body: input
           }
         ],
-        contentLength: true,
+        length: true,
         callback: function (err, res, body) {
           fs.writeFileSync(tmp, body)
           var stats = fs.statSync(tmp)

@@ -91,9 +91,9 @@ function request (_options) {
   function init () {
     if (req._initialized) return
 
-    if (options.contentLength) {
-      var contentLength = require('./lib/options/content-length')
-      contentLength(req, options, function (length) {
+    if (options.length) {
+      var length = require('./lib/options/length')
+      length(req, options, function (length) {
         if (length) {
           options.headers.set('content-length', length)
         }
