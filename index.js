@@ -2,7 +2,7 @@
 var util = require('util')
 var config = require('./lib/config')
   , utils = require('./lib/utils')
-var HTTPDuplex = require('http-duplex')
+var HTTPDuplex = require('./lib/http-duplex')
 
 util.inherits(Request, HTTPDuplex)
 
@@ -19,7 +19,7 @@ function request (_options) {
   })
 
   if (options.redirect) {
-    var redirect = require('redirect')
+    var redirect = require('./lib/options/redirect')
     redirect(req, options)
   }
 
@@ -27,7 +27,7 @@ function request (_options) {
     var type = typeof options.gzip
       , gzip
     if (type === 'boolean' || type === 'string') {
-      gzip = require('gzip')
+      gzip = require('./lib/options/gzip')
     }
     else if (type === 'function') {
       gzip = options.gzip
@@ -41,7 +41,7 @@ function request (_options) {
     var type = typeof options.encoding
       , encoding
     if (type === 'boolean' || type === 'string') {
-      encoding = require('encoding')
+      encoding = require('./lib/options/encoding')
     }
     else if (type === 'function') {
       encoding = options.encoding
@@ -53,13 +53,13 @@ function request (_options) {
   }
 
   if (options.multipart) {
-    var multipart = require('multipart')
+    var multipart = require('./lib/options/multipart')
     multipart(req, options)
   }
 
   if (options.callback) {
     if (typeof options.callback === 'function') {
-      var callback = require('callback')
+      var callback = require('./lib/options/callback')
       callback(req, options)
     }
     else {
@@ -68,15 +68,15 @@ function request (_options) {
   }
 
   if (options.qs) {
-    var qs = require('_qs')
+    var qs = require('./lib/options/qs')
     qs(req, options)
   }
   if (options.form) {
-    var form = require('form')
+    var form = require('./lib/options/form')
     form(req, options)
   }
   if (options.json) {
-    var json = require('json')
+    var json = require('./lib/options/json')
     json(req, options)
   }
 
@@ -92,7 +92,7 @@ function request (_options) {
     if (req._initialized) return
 
     if (options.contentLength) {
-      var contentLength = require('content-length')
+      var contentLength = require('./lib/options/content-length')
       contentLength(req, options, function (length) {
         if (length) {
           options.headers.set('content-length', length)
@@ -105,24 +105,26 @@ function request (_options) {
     }
 
     function _init () {
-      if (options.headers.get('content-length') === undefined) {
-        options.headers.set('transfer-encoding', 'chunked')
+      if (options.body || req._src || !options.end) {
+        if (options.headers.get('content-length') === undefined) {
+          options.headers.set('transfer-encoding', 'chunked')
+        }
       }
 
       if (options.auth || options.oauth || options.hawk || options.httpSignature || options.aws) {
-        var auth = require('auth')
+        var auth = require('./lib/options/auth')
         auth(req, options)
       }
 
       req.init(utils.filter(options))
 
       if (options.body) {
-        var body = require('body')
+        var body = require('./lib/options/body')
         body(req, options)
       }
 
       if (options.end) {
-        var end = require('end')
+        var end = require('./lib/options/end')
         end(req, options)
       }
     }
