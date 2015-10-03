@@ -81,7 +81,7 @@ function request (_options) {
   }
 
   if (process.env.DEBUG) {
-    var log = require('log')
+    var log = require('./lib/log')
     log(req)
   }
 
@@ -116,6 +116,7 @@ function request (_options) {
         auth(req, options)
       }
 
+      req.emit('options', options)
       req.init(utils.filter(options))
 
       if (options.body) {
