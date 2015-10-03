@@ -19,8 +19,8 @@
     "url": "https://github.com/node-http/core.git"
   },
 
-  "bundledDependencies": {
-    "http-duplex"     : "0.0.0"
+  "dependencies": {
+    "qs"              : "5.1.0"
   },
 
   "devDependencies": {
