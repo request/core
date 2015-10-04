@@ -49,8 +49,11 @@
 - **callback** buffers the response body
   - `function(err, res, body)` by default the response buffer is decoded into string using `utf8`. Set the `encoding` property to `binary` if you expect binary data, or any other specific encoding
 - **redirect**
-  - `true`
-  - `{all: true, max: 5, removeReferer}`
+  - `true` follow redirects for `GET`, `HEAD`, `OPTIONS` and `TRACE` requests
+  - `Object`
+    - *all* follow all redirects
+    - *max* maximum redirects allowed
+    - *removeReferer* remove the `referer` header on redirect
 - **body**
   - `Stream`
   - `Buffer`
@@ -102,8 +105,7 @@
 ## Generated Options
 
 - **url** contains the parsed URL
-- **redirect** should be converted to object containing all possible options
-  - contains *followed* key
+- **redirect** is converted to object containing all possible options including the `followed` state variable, containing the followed redirects count
 
 
 ## Logger
