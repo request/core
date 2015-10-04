@@ -457,4 +457,35 @@ describe('- redirect', function () {
     })
   })
 
+  describe('remove authorization on hostname change', function () {
+    var server, redirects = 0
+    before(function (done) {
+      server = http.createServer()
+      server.on('request', function (req, res) {
+        console.server('redirect %o', req.headers)
+        redirects++
+        res.writeHead(301, {'location': '/'})
+        res.end()
+      })
+      server.listen(6767, 'localhost', done)
+    })
+
+    it('9', function (done) {
+      var input = fs.readFileSync(image2)
+
+      var req = request({
+        url: 'http://localhost:6767',
+        redirect: {max: 3},
+        callback: function (err, res, body) {
+          redirects.should.equal(3)
+          done()
+        }
+      })
+    })
+
+    after(function (done) {
+      server.close(done)
+    })
+  })
+
 })

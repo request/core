@@ -24,9 +24,6 @@ function request (_options) {
   }
 
   if (options.redirect) {
-    if (typeof options.redirect !== 'object') {
-      options.redirect = {}
-    }
     var redirect = require('./lib/options/redirect')
     redirect(req, options)
   }
