@@ -35,9 +35,6 @@
 
 - **url/uri**
   - `https://site.com`
-- **protocol**
-  - `http`
-  - `https`
 - **gzip** pipes the response body to [zlib][zlib] Inflate or Gunzip stream
   - `true` detects the compression method from the `content-encoding` header
   - `deflate/gzip` user defined compression method to use
@@ -106,6 +103,7 @@
 
 - **url** contains the parsed URL
 - **redirect** is converted to object containing all possible options including the `followed` state variable, containing the followed redirects count
+- **auth** containes `sent` state variable indicating whether the Basic auth is sent already
 
 
 ## Logger
@@ -120,6 +118,14 @@
 ```bash
 $ DEBUG=req,res node app.js
 ```
+
+
+## Errors
+
+###### oauth
+
+- `oauth: transport_method: body requires method: POST and content-type: application/x-www-form-urlencoded`
+- `oauth: signature_method: PLAINTEXT not supported with body_hash signing`
 
 
 ## Notice

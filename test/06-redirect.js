@@ -471,13 +471,42 @@ describe('- redirect', function () {
     })
 
     it('9', function (done) {
-      var input = fs.readFileSync(image2)
-
       var req = request({
         url: 'http://localhost:6767',
         redirect: {max: 3},
         callback: function (err, res, body) {
           redirects.should.equal(3)
+          done()
+        }
+      })
+    })
+
+    after(function (done) {
+      server.close(done)
+    })
+  })
+
+  describe('do not follow 401 redirect ' +
+    'when basic/bearer auth is already sent', function () {
+    var server, redirects = 0
+    before(function (done) {
+      server = http.createServer()
+      server.on('request', function (req, res) {
+        console.server('redirect %o', req.headers)
+        redirects++
+        res.writeHead(401, {})
+        res.end()
+      })
+      server.listen(6767, 'localhost', done)
+    })
+
+    it('10', function (done) {
+      var req = request({
+        url: 'http://localhost:6767',
+        auth: {bearer: 'token'},
+        redirect: true,
+        callback: function (err, res, body) {
+          redirects.should.equal(1)
           done()
         }
       })
