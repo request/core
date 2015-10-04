@@ -23,7 +23,7 @@
 - **request** req, options
 - **redirect** res
 - **options** emit *@http/core* options
-- **callback** emit raw response body, either *Buffer* or *String* (the *callback* option is required)
+- **body** emit raw response body, either *Buffer* or *String* (the *callback* option is required)
 - **json** emit parsed JSON response body (the *callback* option is required)
 
 ## req/res
