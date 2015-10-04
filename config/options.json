@@ -20,5 +20,6 @@
 
   "length",
   "redirect",
-  "end"
+  "end",
+  "parse"
 ]

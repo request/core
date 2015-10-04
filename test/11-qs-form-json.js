@@ -127,6 +127,7 @@ describe('- qs-form-json', function () {
       var req = request({
         url: 'http://localhost:6767',
         json: {poop: 'wqw'},
+        parse: {json: true},
         callback: function (err, res, body) {
           should.deepEqual(body, {poop: 'wqw'})
           done()

@@ -71,6 +71,9 @@ function request (_options) {
       throw new Error('calback should be a function')
     }
   }
+  if (!options.parse) {
+    options.parse = {}
+  }
 
   if (options.qs) {
     var qs = require('./lib/options/qs')
@@ -105,6 +108,11 @@ function request (_options) {
     }
 
     function _init () {
+      if (options.parse.json) {
+        if (!options.headers.get('accept')) {
+          options.headers.set('accept', 'application/json')
+        }
+      }
       if (options.body || req._src || !options.end) {
         if (options.headers.get('content-length') === undefined) {
           options.headers.set('transfer-encoding', 'chunked')

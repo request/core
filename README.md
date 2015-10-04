@@ -93,6 +93,10 @@
 - **httpSignature**
 - **aws**
 - **oauth**
+- **parse**
+  - `{json:true}`
+    - sets the `accept: application/json` header for the request
+    - parses JSON or JSONP response bodies (only if the server responds with the approprite headers)
 
 
 ## Generated Options
@@ -109,7 +113,7 @@
 - **http** prints out the options object passed to the underlying `http.request` method
 - **raw** prints out the raw `@http/core` options object right before sending the request
 - **body** prints out the raw request and response bodies (the response body is available only when the `callback` option is being used)
-- **json** prints out the parsed JSON response body (only if the response body is a JSON one, and if the `callback` option is being used)
+- **json** prints out the parsed JSON response body (only if the response body is a JSON one, and if the `callback` and `parse.json` options are being used)
 
 ```bash
 $ DEBUG=req,res node app.js
