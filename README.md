@@ -23,7 +23,8 @@
 - **request** req, options
 - **redirect** res
 - **options** emit *@http/core* options
-- **callback** emit raw response body, either *Buffer* or *String*
+- **callback** emit raw response body, either *Buffer* or *String* (the *callback* option is required)
+- **json** emit parsed JSON response body (the *callback* option is required)
 
 ## req/res
 
@@ -103,11 +104,12 @@
 
 ## Logger
 
-- **req**
-- **res**
-- **options**
-- **options:raw**
-- **body**
+- **req** prints out the request `method`, `url`, and `headers`
+- **res** prints out the response `statusCode`, `statusMessage`, and `headers`
+- **http** prints out the options object passed to the underlying `http.request` method
+- **raw** prints out the raw `@http/core` options object right before sending the request
+- **body** prints out the raw request and response bodies (the response body is available only when the `callback` option is being used)
+- **json** prints out the parsed JSON response body (only if the response body is a JSON one, and if the `callback` option is being used)
 
 ```bash
 $ DEBUG=req,res node app.js
