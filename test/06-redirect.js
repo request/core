@@ -43,8 +43,9 @@ describe('- redirect', function () {
         , output = fs.createWriteStream(tmp)
 
       var req = request({
+        method: 'POST',
         url: 'http://localhost:6767/redirect',
-        redirect: true
+        redirect: {all: true}
       })
 
       input
@@ -93,9 +94,10 @@ describe('- redirect', function () {
         , output = fs.createWriteStream(tmp)
 
       var req = request({
+        method: 'POST',
         url: 'http://localhost:6767/redirect',
         gzip: true,
-        redirect: true
+        redirect: {all: true}
       })
 
       input
@@ -150,9 +152,10 @@ describe('- redirect', function () {
         , output = fs.createWriteStream(tmp)
 
       var req = request({
+        method: 'POST',
         url: 'http://localhost:6767/redirect1',
         gzip: true,
-        redirect: true
+        redirect: {all: true}
       })
 
       input
@@ -199,9 +202,10 @@ describe('- redirect', function () {
       var input = fs.createReadStream(image2, {highWaterMark: 1024})
 
       var req = request({
+        method: 'POST',
         url: 'http://localhost:6767/redirect',
         encoding: 'binary',
-        redirect: true,
+        redirect: {all: true},
         callback: function (err, res, body) {
           fs.writeFileSync(tmp, body)
           var stats = fs.statSync(tmp)
@@ -287,10 +291,11 @@ describe('- redirect', function () {
       var input = fs.readFileSync(image2)
 
       var req = request({
+        method: 'POST',
         url: 'http://localhost:6767/redirect',
         body: input,
         encoding: 'binary',
-        redirect: true,
+        redirect: {all: true},
         callback: function (err, res, body) {
           fs.writeFileSync(tmp, body)
           var stats = fs.statSync(tmp)
@@ -330,9 +335,10 @@ describe('- redirect', function () {
       var input = fs.readFileSync(image2)
 
       var req = request({
+        method: 'POST',
         url: 'http://localhost:6767/redirect',
         body: Buffer('poop'),
-        redirect: true,
+        redirect: {all: true},
         callback: function (err, res, body) {
           body.should.equal('poop')
           done()
@@ -371,8 +377,9 @@ describe('- redirect', function () {
         , output = fs.createWriteStream(tmp)
 
       var req = request({
+        method: 'POST',
         url: 'http://localhost:6767/redirect',
-        redirect: true,
+        redirect: {all: true},
         end: false
       })
 

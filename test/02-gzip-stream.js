@@ -35,7 +35,7 @@ describe('- gzip-stream', function () {
         , output = fs.createWriteStream(tmp)
 
       var req = request({
-        method: 'GET',
+        method: 'POST',
         url: 'http://localhost:6767'
       })
 
@@ -73,7 +73,7 @@ describe('- gzip-stream', function () {
         , output = fs.createWriteStream(tmp)
 
       var req = request({
-        method: 'GET',
+        method: 'POST',
         host: 'localhost',
         port: 6767,
         path: '/',
@@ -124,7 +124,7 @@ describe('- gzip-stream', function () {
         , output = fs.createWriteStream(tmp)
 
       var req = request({
-        method: 'GET',
+        method: 'POST',
         host: 'localhost',
         port: 6767,
         path: '/',

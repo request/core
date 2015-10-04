@@ -34,6 +34,7 @@ describe('- body', function () {
         , output = fs.createWriteStream(tmp)
 
       var req = request({
+        method: 'POST',
         url: 'http://localhost:6767',
         body: input
       })
@@ -77,8 +78,9 @@ describe('- body', function () {
         , output = fs.createWriteStream(tmp)
 
       var req = request({
+        method: 'POST',
         url: 'http://localhost:6767/redirect',
-        redirect: true,
+        redirect: {all: true},
         body: input
       })
 
@@ -116,6 +118,7 @@ describe('- body', function () {
         , output = fs.createWriteStream(tmp)
 
       var req = request({
+        method: 'POST',
         url: 'http://localhost:6767',
         body: input
       })
@@ -149,6 +152,7 @@ describe('- body', function () {
       var input = fs.readFileSync(image2)
 
       var req = request({
+        method: 'POST',
         url: 'http://localhost:6767',
         encoding: 'binary',
         body: input,
@@ -185,6 +189,7 @@ describe('- body', function () {
 
     it('6', function (done) {
       var req = request({
+        method: 'POST',
         url: 'http://localhost:6767',
         body: Buffer('poop'),
         callback: function (err, res, body) {
@@ -218,6 +223,7 @@ describe('- body', function () {
 
     it('7', function (done) {
       var req = request({
+        method: 'POST',
         url: 'http://localhost:6767',
         body: 'poop',
         callback: function (err, res, body) {
@@ -245,6 +251,7 @@ describe('- body', function () {
 
     it('8', function (done) {
       var req = request({
+        method: 'POST',
         url: 'http://localhost:6767',
         body: ['amazing', 'wqw', 'poop'],
         callback: function (err, res, body) {

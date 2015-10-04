@@ -90,6 +90,7 @@ describe('- qs-form-json', function () {
 
     it('2', function (done) {
       var req = request({
+        method: 'POST',
         url: 'http://localhost:6767',
         form: {poop: 'wqw'},
         callback: function (err, res, body) {
@@ -125,6 +126,7 @@ describe('- qs-form-json', function () {
 
     it('3', function (done) {
       var req = request({
+        method: 'POST',
         url: 'http://localhost:6767',
         json: {poop: 'wqw'},
         parse: {json: true},

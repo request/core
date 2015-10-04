@@ -34,6 +34,7 @@ describe('- buffer-response', function () {
       var input = fs.createReadStream(image2, {highWaterMark: 1024})
 
       var req = request({
+        method: 'POST',
         url: 'http://localhost:6767'
       })
 
@@ -78,6 +79,7 @@ describe('- buffer-response', function () {
       var input = fs.createReadStream(image2, {highWaterMark: 1024})
 
       var req = request({
+        method: 'POST',
         url: 'http://localhost:6767',
         encoding: 'binary',
         callback: function (err, res, body) {
@@ -139,6 +141,7 @@ describe('- buffer-response', function () {
       var input = fs.createReadStream(image2, {highWaterMark: 1024})
 
       var req = request({
+        method: 'POST',
         url: 'http://localhost:6767',
         encoding: 'binary',
         gzip: true,

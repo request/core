@@ -36,6 +36,7 @@ describe('- content-length', function () {
         , output = fs.createWriteStream(tmp)
 
       var req = request({
+        method: 'POST',
         url: 'http://localhost:6767',
         length: true
       })
@@ -82,6 +83,7 @@ describe('- content-length', function () {
         encoding: null
       })
       var upload = request({
+        method: 'POST',
         url: 'http://localhost:6767',
         length: true,
         encoding: 'binary'
@@ -130,6 +132,7 @@ describe('- content-length', function () {
         encoding: 'binary'
       })
       var upload = request({
+        method: 'POST',
         url: 'http://localhost:6767',
         length: true,
         encoding: 'binary'
@@ -170,6 +173,7 @@ describe('- content-length', function () {
         , output = fs.createWriteStream(tmp)
 
       var req = request({
+        method: 'POST',
         url: 'http://localhost:6767',
         body: input,
         length: true
@@ -215,6 +219,7 @@ describe('- content-length', function () {
         encoding: null
       })
       var upload = request({
+        method: 'POST',
         url: 'http://localhost:6767',
         body: download,
         length: true,
@@ -263,6 +268,7 @@ describe('- content-length', function () {
         encoding: null
       })
       var upload = request({
+        method: 'POST',
         url: 'http://localhost:6767',
         body: download,
         length: true,
@@ -302,6 +308,7 @@ describe('- content-length', function () {
       var input = fs.readFileSync(image2)
 
       var req = request({
+        method: 'POST',
         url: 'http://localhost:6767',
         body: input,
         encoding: 'binary',
@@ -340,6 +347,7 @@ describe('- content-length', function () {
 
     it('7', function (done) {
       var req = request({
+        method: 'POST',
         url: 'http://localhost:6767',
         body: 'poop',
         length: true,
@@ -369,6 +377,7 @@ describe('- content-length', function () {
 
     it('8', function (done) {
       var req = request({
+        method: 'POST',
         url: 'http://localhost:6767',
         body: ['amazing', 'wqw', 'poop'],
         length: true,
@@ -508,6 +517,7 @@ describe('- content-length', function () {
         , output = fs.createWriteStream(tmp)
 
       var req = request({
+        method: 'POST',
         url: 'http://localhost:6767',
         headers: {
           'content-length': 22025
@@ -548,6 +558,7 @@ describe('- content-length', function () {
 
     it('12', function (done) {
       var req = request({
+        method: 'POST',
         url: 'http://localhost:6767',
         headers: {
           'content-length': 4
