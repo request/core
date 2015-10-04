@@ -414,4 +414,47 @@ describe('- redirect', function () {
     })
   })
 
+  describe('remove authorization on hostname change', function () {
+    var server, server2
+    before(function (done) {
+      server = http.createServer()
+      server.on('request', function (req, res) {
+        console.server('redirect %o', req.headers)
+        req.headers.authorization.should.equal('Basic poop')
+        res.writeHead(301, {'location': 'http://dummy.com:6768'})
+        res.end()
+      })
+      server.listen(6767, 'localhost', function () {
+
+        server2 = http.createServer()
+        server2.on('request', function (req, res) {
+          console.server('redirect %o', req.headers)
+          should.equal(req.headers.authorization, undefined)
+          req.headers.referer.should.equal('http://localhost:6767/')
+          res.end()
+        })
+        server2.listen(6768, 'dummy.com', done)
+      })
+    })
+
+    it('8', function (done) {
+      var input = fs.readFileSync(image2)
+
+      var req = request({
+        url: 'http://localhost:6767',
+        headers: {authorization: 'Basic poop'},
+        redirect: true,
+        callback: function (err, res, body) {
+          done()
+        }
+      })
+    })
+
+    after(function (done) {
+      server.close(function () {
+        server2.close(done)
+      })
+    })
+  })
+
 })
