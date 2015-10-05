@@ -21,7 +21,7 @@ console.client = debug('client')
 
 describe('- auth', function () {
 
-  describe('basic', function () {
+  describe('basic + sendImmediately:false', function () {
     var server
     before(function (done) {
       // htpasswd -c -b .htpasswd user pass
@@ -32,9 +32,9 @@ describe('- auth', function () {
       server = http.createServer(basic)
       server.on('request', function (req, res) {
         if (req.headers['authorization']) {
-          var encoded = req.headers['authorization'].split(' ')[1]
-          res.end(Buffer(encoded, 'base64').toString('utf8'))
-        } else {
+          res.end(req.headers['authorization'])
+        }
+        else {
           res.end()
         }
       })
@@ -44,10 +44,12 @@ describe('- auth', function () {
     it('0', function (done) {
       var req = request({
         url: 'http://localhost:6767',
-        redirect: true,
         auth: {user: 'user', pass: 'pass', sendImmediately: false},
+        redirect: true,
         callback: function (err, res, body) {
-          body.should.equal('user:pass')
+          var encoded = body.split(' ')[1]
+          var auth = Buffer(encoded, 'base64').toString('utf8')
+          auth.should.equal('user:pass')
           done()
         }
       })
@@ -58,7 +60,7 @@ describe('- auth', function () {
     })
   })
 
-  describe('digest', function () {
+  describe('digest + sendImmediately:false', function () {
     var server
     before(function (done) {
       // htdigest -c .htpasswd_digest realm user
@@ -70,7 +72,8 @@ describe('- auth', function () {
       server.on('request', function (req, res) {
         if (req.headers['authorization']) {
           res.end(req.headers['authorization'])
-        } else {
+        }
+        else {
           res.end()
         }
       })
@@ -80,8 +83,8 @@ describe('- auth', function () {
     it('1', function (done) {
       var req = request({
         url: 'http://localhost:6767',
-        redirect: true,
         auth: {user: 'user', pass: 'pass', sendImmediately: false},
+        redirect: true,
         callback: function (err, res, body) {
           body.should.match(/Digest username="user"/)
           done()
@@ -101,7 +104,8 @@ describe('- auth', function () {
       server.on('request', function (req, res) {
         if (req.headers['authorization']) {
           res.end(req.headers['authorization'])
-        } else {
+        }
+        else {
           res.end()
         }
       })
@@ -111,8 +115,41 @@ describe('- auth', function () {
     it('2', function (done) {
       var req = request({
         url: 'http://localhost:6767',
-        // redirect: true,
         auth: {bearer: 'token'},
+        // redirect: true,
+        callback: function (err, res, body) {
+          body.should.equal('Bearer token')
+          done()
+        }
+      })
+    })
+
+    after(function (done) {
+      server.close(done)
+    })
+  })
+
+  describe('bearer + sendImmediately:false', function () {
+    var server
+    before(function (done) {
+      server = http.createServer()
+      server.on('request', function (req, res) {
+        if (req.headers['authorization']) {
+          res.end(req.headers['authorization'])
+        }
+        else {
+          res.writeHead(401, {'www-authenticate': 'Bearer realm="nono"'})
+          res.end()
+        }
+      })
+      server.listen(6767, done)
+    })
+
+    it('3', function (done) {
+      var req = request({
+        url: 'http://localhost:6767',
+        auth: {bearer: 'token', sendImmediately: false},
+        redirect: true,
         callback: function (err, res, body) {
           body.should.equal('Bearer token')
           done()
@@ -148,7 +185,7 @@ describe('- auth', function () {
       server.listen(6767, done)
     })
 
-    it('3', function (done) {
+    it('4', function (done) {
       var req = request({
         url: 'http://localhost:6767',
         hawk: {credentials: {
@@ -188,7 +225,7 @@ describe('- auth', function () {
       server.listen(6767, done)
     })
 
-    it('4', function (done) {
+    it('5', function (done) {
       var req = request({
         url: 'http://localhost:6767',
         httpSignature: {
@@ -217,7 +254,7 @@ describe('- auth', function () {
       server.listen(6767, done)
     })
 
-    it('5', function (done) {
+    it('6', function (done) {
       var req = request({
         url: 'http://localhost:6767',
         aws: {
@@ -261,10 +298,10 @@ describe('- auth', function () {
       server.listen(6767, done)
     })
 
-    it('6', function (done) {
+    it('7', function (done) {
       var req = request({
         url: 'http://localhost:6767',
-        qs: {a:1},
+        qs: {a: 1},
         oauth: {
           consumer_key: 'GDdmIQH6jhtmLUypg82g',
           consumer_secret: 'MCD8BKwGdgPHvAuvgvz4EQpqDAtx89grbuNMRd7Eh98',
