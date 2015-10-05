@@ -19,7 +19,7 @@ function request (_options) {
   })
 
   if (process.env.DEBUG) {
-    var log = require('./lib/log')
+    var log = require('@http/log')
     log(req)
   }
 
