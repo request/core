@@ -62,19 +62,6 @@ function request (_options) {
     multipart(req, options)
   }
 
-  if (options.callback) {
-    if (typeof options.callback === 'function') {
-      var callback = require('./lib/options/callback')
-      callback(req, options)
-    }
-    else {
-      throw new Error('calback should be a function')
-    }
-  }
-  if (!options.parse) {
-    options.parse = {}
-  }
-
   if (options.qs) {
     var qs = require('./lib/options/qs')
     qs(req, options)
@@ -86,6 +73,19 @@ function request (_options) {
   if (options.json) {
     var json = require('./lib/options/json')
     json(req, options)
+  }
+
+  if (options.callback) {
+    if (typeof options.callback === 'function') {
+      var callback = require('./lib/options/callback')
+      callback(req, options)
+    }
+    else {
+      throw new Error('calback should be a function')
+    }
+  }
+  if (!options.parse) {
+    options.parse = {}
   }
 
   req.once('init', init)
