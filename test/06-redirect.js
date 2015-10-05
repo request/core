@@ -414,6 +414,41 @@ describe('- redirect', function () {
     })
   })
 
+  describe('resend authorization header', function () {
+    var server, redirects = 0
+    before(function (done) {
+      server = http.createServer()
+      server.on('request', function (req, res) {
+        console.server('redirect %o', req.headers)
+        req.headers.authorization.should.equal('OAuth poop')
+        redirects++
+        if (req.url === '/redirect') {
+          res.writeHead(301, {'location': '/'})
+        }
+        res.end()
+      })
+      server.listen(6767, done)
+    })
+
+    it('8', function (done) {
+      var input = fs.readFileSync(image2)
+
+      var req = request({
+        url: 'http://localhost:6767/redirect',
+        headers: {authorization: 'OAuth poop'},
+        redirect: true,
+        callback: function (err, res, body) {
+          redirects.should.equal(2)
+          done()
+        }
+      })
+    })
+
+    after(function (done) {
+      server.close(done)
+    })
+  })
+
   describe('remove authorization on hostname change', function () {
     var server, server2
     before(function (done) {
@@ -437,7 +472,7 @@ describe('- redirect', function () {
       })
     })
 
-    it('8', function (done) {
+    it('9', function (done) {
       var input = fs.readFileSync(image2)
 
       var req = request({
@@ -457,7 +492,7 @@ describe('- redirect', function () {
     })
   })
 
-  describe('remove authorization on hostname change', function () {
+  describe('set max redirects to follow', function () {
     var server, redirects = 0
     before(function (done) {
       server = http.createServer()
@@ -470,7 +505,7 @@ describe('- redirect', function () {
       server.listen(6767, 'localhost', done)
     })
 
-    it('9', function (done) {
+    it('10', function (done) {
       var req = request({
         url: 'http://localhost:6767',
         redirect: {max: 3},
@@ -500,7 +535,7 @@ describe('- redirect', function () {
       server.listen(6767, 'localhost', done)
     })
 
-    it('10', function (done) {
+    it('11', function (done) {
       var req = request({
         url: 'http://localhost:6767',
         auth: {bearer: 'token'},
