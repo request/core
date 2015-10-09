@@ -127,14 +127,18 @@
 
 ###### Misc
 
-- **parse**
-  - `{json: true}`
-    - sets the `accept: application/json` header for the request
-    - parses `JSON` or `JSONP` response bodies (only if the server responds with the approprite headers)
+- **cookie**
+  - `true`
+  - `function(req, options)`
 
 - **length**
   - `true` defaults to `false` if omitted
   - `length(req, options)`
+
+- **parse**
+  - `{json: true}`
+    - sets the `accept: application/json` header for the request
+    - parses `JSON` or `JSONP` response bodies (only if the server responds with the approprite headers)
 
 - **end**
   - `true` tries to automatically end the request on `nextTick`
@@ -148,6 +152,8 @@
 - **url** contains the parsed URL
 - **redirect** is converted to object containing all possible options including the `followed` state variable, containing the followed redirects count
 - **auth** containes `sent` state variable indicating whether the Basic auth is sent already
+- **cookie** is converted to object and containes the initial cookie `header` as a property
+- **jar** the internal [tough-cookie][tough-cookie] jar
 
 
 ## Logger
@@ -181,6 +187,7 @@ This module may contain code snippets initially implemented in [request][request
 
   [request]: https://github.com/request/request
   [request-contributors]: https://github.com/request/request/graphs/contributors
+  [tough-cookie]: https://github.com/SalesforceEng/tough-cookie
 
   [iconv-lite]: https://www.npmjs.com/package/iconv-lite
   [zlib]: https://iojs.org/api/zlib.html

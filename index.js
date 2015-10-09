@@ -75,6 +75,11 @@ function request (_options) {
     json(req, options)
   }
 
+  if (options.cookie) {
+    var cookie = require('./lib/options/cookie')
+    cookie(req, options)
+  }
+
   if (options.callback) {
     if (typeof options.callback === 'function') {
       var callback = require('./lib/options/callback')
