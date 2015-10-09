@@ -44,33 +44,19 @@
 
 ## Options
 
+
+###### URL
+
 - **url/uri**
   - `String`
   - `url.Url`
 
-- **callback** buffers the response body
-  - `function(err, res, body)` by default the response buffer is decoded into string using `utf8`. Set the `encoding` property to `binary` if you expect binary data, or any other specific encoding
-
-- **redirect**
-  - `true` follow redirects for `GET`, `HEAD`, `OPTIONS` and `TRACE` requests
-  - `Object`
-    - *all* follow all redirects
-    - *max* maximum redirects allowed
-    - *removeReferer* remove the `referer` header on redirect
-
-
-###### Body
-
-- **body**
-  - `Stream`
-  - `Buffer`
-  - `string`
-  - `Array`
-  - `function(req, options)`
-
 - **qs**
   - `Object`
   - `String`
+
+
+###### Body
 
 - **form**
   - `Object`
@@ -79,6 +65,13 @@
 - **json**
   - `Object`
   - `String`
+
+- **body**
+  - `Stream`
+  - `Buffer`
+  - `string`
+  - `Array`
+  - `function(req, options)`
 
 - **multipart** - requires [@http/multipart][http-multipart]
   - body can be `Stream`, `Request`, `Buffer`, `String`
@@ -97,6 +90,21 @@
     ```
 
 
+###### Authentication
+
+- **auth**
+  - `{user: '', pass: '', sendImmediately: false}`
+  - `{bearer: ''}`
+
+- **oauth** - requires [@http/oauth][http-oauth]
+
+- **hawk** - requires [hawk][hawk]
+
+- **httpSignature** - requires [http-signature][http-signature]
+
+- **aws** - requires [aws-sign2][aws-sign2]
+
+
 ###### Modifiers
 
 - **gzip** pipes the response body to [zlib][zlib] Inflate or Gunzip stream
@@ -110,21 +118,6 @@
   - `function(req, options)` define your own stream handler
 
 
-###### Authentication
-
-- **auth**
-  - `{user: '', pass: '', sendImmediately: false}`
-  - `{bearer: ''}`
-
-- **hawk** - requires [hawk][hawk]
-
-- **httpSignature** - requires [http-signature][http-signature]
-
-- **aws** - requires [aws-sign2][aws-sign2]
-
-- **oauth** - requires [@http/oauth][http-oauth]
-
-
 ###### Misc
 
 - **cookie**
@@ -134,6 +127,16 @@
 - **length**
   - `true` defaults to `false` if omitted
   - `length(req, options)`
+
+- **callback** buffers the response body
+  - `function(err, res, body)` by default the response buffer is decoded into string using `utf8`. Set the `encoding` property to `binary` if you expect binary data, or any other specific encoding
+
+- **redirect**
+  - `true` follow redirects for `GET`, `HEAD`, `OPTIONS` and `TRACE` requests
+  - `Object`
+    - *all* follow all redirects
+    - *max* maximum redirects allowed
+    - *removeReferer* remove the `referer` header on redirect
 
 - **parse**
   - `{json: true}`

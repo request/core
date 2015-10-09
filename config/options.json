@@ -1,26 +1,26 @@
 [
   "url",
   "uri",
-
-  "gzip",
-  "encoding",
-
   "qs",
+
   "form",
   "json",
   "body",
   "multipart",
-  "callback",
 
   "auth",
+  "oauth",
   "hawk",
   "httpSignature",
   "aws",
-  "oauth",
 
-  "length",
-  "redirect",
+  "gzip",
+  "encoding",
+
   "cookie",
-  "end",
-  "parse"
+  "length",
+  "callback",
+  "redirect",
+  "parse",
+  "end"
 ]
