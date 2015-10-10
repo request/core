@@ -2,6 +2,7 @@
 var util = require('util')
 var config = require('./lib/config')
   , utils = require('./lib/utils')
+  , response = require('./lib/response')
 var HTTPDuplex = require('./lib/http-duplex')
 
 util.inherits(Request, HTTPDuplex)
@@ -14,9 +15,7 @@ function Request (protocol) {
 function request (_options) {
   var options = config.init(_options)
   var req = new Request(options.protocol)
-  req.on('response', function (res) {
-    utils.response(res)
-  })
+  req.on('response', response(req, options))
 
   if (process.env.DEBUG) {
     var log = require('@http/log')
