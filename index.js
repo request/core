@@ -15,12 +15,13 @@ function Request (protocol) {
 function request (_options) {
   var options = config.init(_options)
   var req = new Request(options.protocol)
-  req.on('response', response(req, options))
 
   if (process.env.DEBUG) {
     var log = require('@http/log')
     log(req)
   }
+
+  req.on('response', response(req, options))
 
   if (options.redirect) {
     var redirect = require('./lib/options/redirect')
