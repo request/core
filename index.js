@@ -53,7 +53,6 @@ function request (_options) {
     else {
       throw new Error('encoding should be boolean, string or a function')
     }
-    encoding(req, options)
   }
 
   if (options.multipart) {
