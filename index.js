@@ -87,9 +87,6 @@ function request (_options) {
       throw new Error('calback should be a function')
     }
   }
-  if (!options.parse) {
-    options.parse = {}
-  }
 
   req.once('init', init)
   process.nextTick(init)
@@ -111,10 +108,9 @@ function request (_options) {
     }
 
     function _init () {
-      if (options.parse.json) {
-        if (!options.headers.get('accept')) {
-          options.headers.set('accept', 'application/json')
-        }
+      if (options.parse) {
+        var parse = require('./lib/options/parse')
+        parse(req, options)
       }
       if (options.body || req._src || !options.end) {
         if (options.headers.get('content-length') === undefined) {
