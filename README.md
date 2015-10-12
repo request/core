@@ -1,6 +1,139 @@
 
 # @http/core
 
+Duplex Streams2 HTTP client. By default it behaves identically to Node's Core [http.request][node-http-request] method.
+
+Each additional feature must be enabled explicitly via option. Some options requires additional dependencies.
+
+
+## Table of Contents
+
+- **[Options][options]**
+- **[DEBUG Logger][options]**
+- **[Events][options]**
+
+
+---
+
+
+## Options
+
+
+### URL
+
+#### url/uri
+  - `String`
+  - `url.Url`
+
+#### qs
+  - `Object`
+  - `String`
+
+
+### Body
+
+#### form
+  - `Object`
+  - `String`
+
+#### json
+  - `Object`
+  - `String`
+
+#### body
+  - `Stream`
+  - `Buffer`
+  - `string`
+  - `Array`
+
+#### multipart - requires [@http/multipart][http-multipart]
+```js
+multipart: {key: 'value'}
+multipart: {key: ['value', 'value']}
+multipart: {key: {
+  value: 'value',
+  options: {filename: '', contentType: '', knownLength: 0}
+}}
+```
+- Generates `multipart/form-data` or any other `multipart/[TYPE]` body.
+The multipart's body item can be either: `Stream`, `Request`, `Buffer` or `String`.
+
+```js
+multipart: [{key: 'value', body: 'body'}]
+multipart: [{key: 'value', body: 'body'}]
+```
+
+
+### Authentication
+
+#### auth - digest auth requires [@http/digest][http-digest]
+- `{user: '', pass: '', sendImmediately: false}`
+  - Sets the `Authorization: Basic ...` header.
+  - The `sendImmediately` option default to `true` if omitted.
+  - The `sendImmediately: false` options requires the [redirect option][redirect-option] to be enabled.
+  - Digest authentication requires the [@http/digest][http-digest] module.
+- `{bearer: '', sendImmediately: false}`
+  - Alternatively the `Authorization: Bearer ...` header can be set if using the `bearer` option.
+  - The rules for the `sendImmediately` option from above applies here.
+
+
+#### oauth - requires [@http/oauth][http-oauth]
+
+#### hawk - requires [hawk][hawk]
+
+#### httpSignature - requires [http-signature][http-signature]
+
+#### aws - requires [aws-sign2][aws-sign2]
+
+
+### Modifiers
+
+#### gzip
+- `gzip: true`
+  - Pipes the response body to [zlib][zlib] Inflate or Gunzip stream based on the compression method specified in the `content-encoding` response header.
+- `gzip: 'gzip'` | `gzip: 'deflate'`
+  - Explicitly specify which decompression method to use.
+
+#### encoding - requires [iconv-lite][iconv-lite]
+- `encoding: true`
+  - Pipes the response body to [iconv-lite][iconv-lite] stream, defaults to `utf8`.
+- `encoding: 'ISO-8859-1'` | `encoding: 'win1251'` | ...
+  - Specific encoding to use.
+- `encoding: 'binary'`
+  - Set `encoding` to `'binary'` when expecting binary response.
+
+
+### Misc
+
+#### cookie - requires [tough-cookie][tough-cookie]
+  - `true`
+
+#### length
+  - `true` defaults to `false` if omitted
+
+#### callback
+  buffers the response body
+  - `function(err, res, body)` by default the response buffer is decoded into string using `utf8`. Set the `encoding` property to `binary` if you expect binary data, or any other specific encoding
+
+#### redirect
+  - `true` follow redirects for `GET`, `HEAD`, `OPTIONS` and `TRACE` requests
+  - `Object`
+    - *all* follow all redirects
+    - *max* maximum redirects allowed
+    - *removeReferer* remove the `referer` header on redirect
+
+#### parse
+  - `{json: true}`
+    - sets the `accept: application/json` header for the request
+    - parses `JSON` or `JSONP` response bodies (only if the server responds with the approprite headers)
+
+#### end
+  - `true` tries to automatically end the request on `nextTick`
+
+
+---
+
+
 ## HTTPDuplex
 
 ###### Private Flags and State
@@ -42,114 +175,6 @@
 ---
 
 
-## Options
-
-
-###### URL
-
-- **url/uri**
-  - `String`
-  - `url.Url`
-
-- **qs**
-  - `Object`
-  - `String`
-
-
-###### Body
-
-- **form**
-  - `Object`
-  - `String`
-
-- **json**
-  - `Object`
-  - `String`
-
-- **body**
-  - `Stream`
-  - `Buffer`
-  - `string`
-  - `Array`
-  - `function(req, options)`
-
-- **multipart** - requires [@http/multipart][http-multipart]
-  - body can be `Stream`, `Request`, `Buffer`, `String`
-    ```js
-    // related
-    multipart: [{key: 'value', body: 'body'}]
-    multipart: [{key: 'value', body: 'body'}]
-
-    // form-data
-    multipart: {key: 'value'}
-    multipart: {key: ['value', 'value']}
-    multipart: {key: {
-      value: 'value',
-      options: {filename: '', contentType: '', knownLength: 0}
-    }}
-    ```
-
-
-###### Authentication
-
-- **auth**
-  - `{user: '', pass: '', sendImmediately: false}`
-  - `{bearer: ''}`
-
-- **oauth** - requires [@http/oauth][http-oauth]
-
-- **hawk** - requires [hawk][hawk]
-
-- **httpSignature** - requires [http-signature][http-signature]
-
-- **aws** - requires [aws-sign2][aws-sign2]
-
-
-###### Modifiers
-
-- **gzip** pipes the response body to [zlib][zlib] Inflate or Gunzip stream
-  - `true` detects the compression method from the `content-encoding` header
-  - `deflate/gzip` user defined compression method to use
-  - `function(req, options)` define your own stream handler
-
-- **encoding** pipes the response body to [iconv-lite][iconv-lite] stream
-  - `true` defaults to `utf8`
-  - `binary/ISO-8859-1/win1251...` specific encoding to use. Use `binary` if you expect binary data
-  - `function(req, options)` define your own stream handler
-
-
-###### Misc
-
-- **cookie**
-  - `true`
-  - `function(req, options)`
-
-- **length**
-  - `true` defaults to `false` if omitted
-  - `length(req, options)`
-
-- **callback** buffers the response body
-  - `function(err, res, body)` by default the response buffer is decoded into string using `utf8`. Set the `encoding` property to `binary` if you expect binary data, or any other specific encoding
-
-- **redirect**
-  - `true` follow redirects for `GET`, `HEAD`, `OPTIONS` and `TRACE` requests
-  - `Object`
-    - *all* follow all redirects
-    - *max* maximum redirects allowed
-    - *removeReferer* remove the `referer` header on redirect
-
-- **parse**
-  - `{json: true}`
-    - sets the `accept: application/json` header for the request
-    - parses `JSON` or `JSONP` response bodies (only if the server responds with the approprite headers)
-
-- **end**
-  - `true` tries to automatically end the request on `nextTick`
-
-
----
-
-
 ## Generated Options
 
 - **url** contains the parsed URL
@@ -157,6 +182,9 @@
 - **auth** containes `sent` state variable indicating whether the Basic auth is sent already
 - **cookie** is converted to object and containes the initial cookie `header` as a property
 - **jar** the internal [tough-cookie][tough-cookie] jar
+
+
+---
 
 
 ## Logger
@@ -174,6 +202,8 @@ Requires [@http/log][http-log]
 $ DEBUG=req,res node app.js
 ```
 
+---
+
 
 ## Errors
 
@@ -183,6 +213,9 @@ $ DEBUG=req,res node app.js
 - `oauth: signature_method: PLAINTEXT not supported with body_hash signing`
 
 
+---
+
+
 ## Notice
 
 This module may contain code snippets initially implemented in [request][request] by [request contributors][request-contributors].
@@ -190,15 +223,20 @@ This module may contain code snippets initially implemented in [request][request
 
   [request]: https://github.com/request/request
   [request-contributors]: https://github.com/request/request/graphs/contributors
-  [tough-cookie]: https://github.com/SalesforceEng/tough-cookie
-
-  [iconv-lite]: https://www.npmjs.com/package/iconv-lite
   [zlib]: https://iojs.org/api/zlib.html
+  [node-http-request]: https://nodejs.org/api/http.html#http_http_request_options_callback
+
+  [tough-cookie]: https://github.com/SalesforceEng/tough-cookie
+  [iconv-lite]: https://www.npmjs.com/package/iconv-lite
   [hawk]: https://github.com/hueniverse/hawk
   [aws-sign2]: https://github.com/request/aws-sign
   [http-signature]: https://github.com/joyent/node-http-signature
+
+  [http-core]: https://github.com/node-http/core
+  [http-headers]: https://github.com/node-http/headers
+  [http-digest]: https://github.com/node-http/digest
   [http-oauth]: https://github.com/node-http/oauth
   [http-multipart]: https://github.com/node-http/multipart
   [http-log]: https://github.com/node-http/log
-  [http-headers]: https://github.com/node-http/headers
-  [http-core]: https://github.com/node-http/core
+
+  [redirect-option]: #redirect
