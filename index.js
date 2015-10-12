@@ -25,7 +25,7 @@ function request (_options) {
   req.on('response', response(req, options))
 
   if (options.redirect) {
-    var redirect = require('./lib/options/redirect')
+    var redirect = modules('redirect')
     redirect(req, options)
   }
 
@@ -53,7 +53,7 @@ function request (_options) {
   }
 
   if (options.cookie) {
-    var cookie = require('./lib/options/cookie')
+    var cookie = modules('cookie')
     cookie(req, options)
   }
 
@@ -98,7 +98,7 @@ function request (_options) {
       }
 
       if (options.auth || options.oauth || options.hawk || options.httpSignature || options.aws) {
-        var auth = require('./lib/options/auth')
+        var auth = modules('auth')
         auth(req, options)
       }
 
