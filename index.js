@@ -3,6 +3,7 @@ var util = require('util')
 var config = require('./lib/config')
   , utils = require('./lib/utils')
   , response = require('./lib/response')
+  , modules = require('./lib/modules')
 var HTTPDuplex = require('./lib/http-duplex')
 
 util.inherits(Request, HTTPDuplex)
@@ -29,31 +30,8 @@ function request (_options) {
   }
 
   if (options.gzip) {
-    var type = typeof options.gzip
-      , gzip
-    if (type === 'boolean' || type === 'string') {
-      gzip = require('./lib/options/gzip')
-    }
-    else if (type === 'function') {
-      gzip = options.gzip
-    }
-    else {
-      throw new Error('gzip should be boolean, string or a function')
-    }
+    var gzip = modules('gzip')
     gzip(req, options)
-  }
-  if (options.encoding && options.encoding !== 'binary') {
-    var type = typeof options.encoding
-      , encoding
-    if (type === 'boolean' || type === 'string') {
-      encoding = require('./lib/options/encoding')
-    }
-    else if (type === 'function') {
-      encoding = options.encoding
-    }
-    else {
-      throw new Error('encoding should be boolean, string or a function')
-    }
   }
 
   if (options.multipart) {
