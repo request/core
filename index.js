@@ -1,7 +1,7 @@
 
 var util = require('util')
 var config = require('./lib/config')
-var _request = require('./lib/request')
+var init = require('./lib/request')
 var HTTPDuplex = require('./lib/http-duplex')
 
 util.inherits(Request, HTTPDuplex)
@@ -15,7 +15,7 @@ function request (_options) {
   var options = config.init(_options)
   var req = new Request(options.protocol)
 
-  _request(req, options)
+  init(req, options)
   return req
 }
 
