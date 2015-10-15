@@ -11,17 +11,14 @@ function Request (protocol) {
   HTTPDuplex.call(this, protocol)
 }
 
-function request (_options, init) {
+function request (_options) {
   var options = config.init(_options)
   var req = new Request(options.protocol)
 
-  if (init === undefined) {
-    _request(req, options)
-  }
-
+  _request(req, options)
   return req
 }
 
 module.exports = request
 request.Request = Request
-request.init = _request
+request._lib = require('./lib')
