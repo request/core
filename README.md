@@ -29,7 +29,6 @@ Each additional feature must be enabled explicitly via option. Some options requ
   - `Object`
   - `String`
 
-
 ### Body
 
 #### form
@@ -126,6 +125,16 @@ multipart: [{key: 'value', body: 'body'}]
   - `{json: true}`
     - sets the `accept: application/json` header for the request
     - parses `JSON` or `JSONP` response bodies (only if the server responds with the approprite headers)
+  - `{qs: {sep:';', eq:':'}}`
+    - `qs.parse` options to use
+  - `{querystring: {sep:';', eq:':', options: {}}}` use the [querystring][node-querystring] module instead
+    - `querystring.parse` options to use
+
+#### stringify
+  - `{qs: {sep:';', eq:':'}}`
+    - `qs.stringify` options to use
+  - `{querystring: {sep:';', eq:':', options: {}}}` use the [querystring][node-querystring] module instead
+    - `querystring.stringify` options to use
 
 #### end
   - `true` tries to automatically end the request on `nextTick`
@@ -153,10 +162,16 @@ multipart: [{key: 'value', body: 'body'}]
 ###### Public Methods
 
   - `init`
+  - `abort`
 
 
 ---
 
+## Request
+
+## Methods
+
+- **Request** the HTTPDuplex child class
 
 ## Events
 

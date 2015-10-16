@@ -22,5 +22,6 @@
   "callback",
   "redirect",
   "parse",
+  "stringify",
   "end"
 ]
