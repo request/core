@@ -16,7 +16,7 @@ console.server = debug('server')
 console.client = debug('client')
 
 
-describe('- redirect', function () {
+describe.skip('- redirect', function () {
 
   describe('stream file', function () {
     var server

@@ -53,7 +53,7 @@ describe('- body', function () {
     })
   })
 
-  describe('redirect body stream', function () {
+  describe.skip('redirect body stream', function () {
     var server
     before(function (done) {
       server = http.createServer()
