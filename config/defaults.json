@@ -10,5 +10,14 @@
   "path",
   "headers",
   "auth",
-  "agent"
+  "agent",
+
+  "pfx",
+  "key",
+  "passphrase",
+  "cert",
+  "ca",
+  "ciphers",
+  "rejectUnauthorized",
+  "secureProtocol"
 ]
