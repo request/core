@@ -33,16 +33,15 @@ Each additional feature must be enabled explicitly via option. Some options requ
 
 #### form
   - `Object`
-  - `String`
+  - `String` pass URL encoded string if you want it to be RFC3986 encoded prior sending
 
 #### json
   - `Object`
-  - `String`
 
 #### body
   - `Stream`
   - `Buffer`
-  - `string`
+  - `String`
   - `Array`
 
 #### multipart - requires [@http/multipart][http-multipart]
@@ -106,6 +105,7 @@ multipart: [{key: 'value', body: 'body'}]
 
 #### cookie - requires [tough-cookie][tough-cookie]
   - `true`
+  - `new require('tough-cookie).CookieJar(store, options)`
 
 #### length
   - `true` defaults to `false` if omitted
@@ -120,11 +120,14 @@ multipart: [{key: 'value', body: 'body'}]
     - *all* follow all redirects
     - *max* maximum redirects allowed
     - *removeReferer* remove the `referer` header on redirect
+    - *allow* `function (res)` user defined function to check if the redirect should be allowed
 
 #### parse
   - `{json: true}`
     - sets the `accept: application/json` header for the request
     - parses `JSON` or `JSONP` response bodies (only if the server responds with the approprite headers)
+  - `{json: function () {}}`
+    - same as above but additionally passes a user defined reviver function to the `JSON.parse` method
   - `{qs: {sep:';', eq:':'}}`
     - `qs.parse` options to use
   - `{querystring: {sep:';', eq:':', options: {}}}` use the [querystring][node-querystring] module instead
@@ -157,6 +160,7 @@ multipart: [{key: 'value', body: 'body'}]
 - `_src` the input read stream, usually from pipe
 - `_chunks` Array - the first chunk read from the input read stream
 - `_ended` whether the outgoing request has ended
+- `_auth` whether basic auth is being used
 
 
 ###### Public Methods
@@ -177,7 +181,9 @@ multipart: [{key: 'value', body: 'body'}]
 
 - **init** should be private I guess
 - **request** req, options
+- **onresponse** res - internal event to execute options response logic
 - **redirect** res
+- **response** res
 - **options** emit [@http/core][http-core] options
 - **body** emit raw response body, either `Buffer` or `String` (the `callback` option is required)
 - **json** emit parsed JSON response body (the `callback` and the `parse:{json:true}` options are required)
