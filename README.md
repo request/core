@@ -45,21 +45,44 @@ Each additional feature must be enabled explicitly via option. Some options requ
   - `Array`
 
 #### multipart - requires [@http/multipart][http-multipart]
-```js
-multipart: {key: 'value'}
-multipart: {key: ['value', 'value']}
-multipart: {key: {
-  value: 'value',
-  options: {filename: '', contentType: '', knownLength: 0}
-}}
-```
-- Generates `multipart/form-data` or any other `multipart/[TYPE]` body.
-The multipart's body item can be either: `Stream`, `Request`, `Buffer` or `String`.
+
+Pass `Object` for `multipart/form-data` body:
 
 ```js
-multipart: [{key: 'value', body: 'body'}]
-multipart: [{key: 'value', body: 'body'}]
+// set item
+multipart: {photo: fs.createReadStream('cat.png')}
+// pass additional info about the uploaded item
+multipart: {
+  photo: {
+    value: fs.createReadStream('cat.png'),
+    options: {filename: 'cat.png', contentType: 'image/png', knownLength: 22025}
+  }
+}
+// pass array of values for this item
+multipart: {attachments: [fs.createReadStream('cat.png'), fs.createReadStream('dog.png')]}
 ```
+
+The item's value can be either: `Stream`, `Request`, `Buffer` or `String`.
+
+Pass `Array` for any other `multipart/[TYPE]`, defaults to `multipart/related`:
+
+```js
+// Example: Upload image to Google Drive
+multipart: [
+  {
+    'Content-Type': 'application/json',
+    body: JSON.stringify({title: 'cat.png'})
+  },
+  {
+    'Content-Type': 'image/png',
+    body: fs.createReadStream('cat.png')
+  }
+]
+```
+
+The `body` key is required and reserved for setting up the item's body. It can be either: `Stream`, `Request`, `Buffer` or `String`.
+
+Additionally you can set `preambleCRLF` and/or `postambleCRLF` to `true`.
 
 
 ### Authentication
