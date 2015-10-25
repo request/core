@@ -145,6 +145,9 @@ Additionally you can set `preambleCRLF` and/or `postambleCRLF` to `true`.
     - *removeReferer* remove the `referer` header on redirect
     - *allow* `function (res)` user defined function to check if the redirect should be allowed
 
+#### timeout
+  - `Number` integer containing the number of milliseconds to wait for a server to send response headers (and start the response body) before aborting the request. Note that if the underlying TCP connection cannot be established, the OS-wide TCP connection timeout will overrule the timeout option
+
 #### parse
   - `{json: true}`
     - sets the `accept: application/json` header for the request
@@ -184,6 +187,7 @@ Additionally you can set `preambleCRLF` and/or `postambleCRLF` to `true`.
 - `_chunks` Array - the first chunk read from the input read stream
 - `_ended` whether the outgoing request has ended
 - `_auth` whether basic auth is being used
+- `_timeout` timeout timer instance
 
 
 ###### Public Methods

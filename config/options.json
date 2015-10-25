@@ -23,6 +23,7 @@
   "length",
   "callback",
   "redirect",
+  "timeout",
   "parse",
   "stringify",
   "end"
