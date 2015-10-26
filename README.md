@@ -148,6 +148,10 @@ Additionally you can set `preambleCRLF` and/or `postambleCRLF` to `true`.
 #### timeout
   - `Number` integer containing the number of milliseconds to wait for a server to send response headers (and start the response body) before aborting the request. Note that if the underlying TCP connection cannot be established, the OS-wide TCP connection timeout will overrule the timeout option
 
+#### proxy
+  - `String`
+  - `url.Url`
+
 #### parse
   - `{json: true}`
     - sets the `accept: application/json` header for the request
