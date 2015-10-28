@@ -151,6 +151,26 @@ Additionally you can set `preambleCRLF` and/or `postambleCRLF` to `true`.
 #### proxy
   - `String`
   - `url.Url`
+  - `Object`
+
+```js
+{
+  proxy: 'http://localhost:6767'
+  //
+  proxy: url.parse('http://localhost:6767')
+  //
+  proxy: {
+    url: 'http://localhost:6767',
+    headers: {
+      allow: ['header-name'],
+      exclusive: ['header-name']
+    }
+  }
+}
+```
+
+#### tunnel - requires [tunnel-agent][tunnel-agent]
+  - `true`
 
 #### parse
   - `{json: true}`
@@ -283,6 +303,7 @@ This module may contain code snippets initially implemented in [request][request
   [hawk]: https://github.com/hueniverse/hawk
   [aws-sign2]: https://github.com/request/aws-sign
   [http-signature]: https://github.com/joyent/node-http-signature
+  [tunnel-agent]: https://github.com/mikeal/tunnel-agent
 
   [http-core]: https://github.com/node-http/core
   [http-headers]: https://github.com/node-http/headers

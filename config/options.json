@@ -25,6 +25,7 @@
   "redirect",
   "timeout",
   "proxy",
+  "tunnel",
   "parse",
   "stringify",
   "end"
