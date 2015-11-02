@@ -24,6 +24,7 @@
     "bl"              : "1.0.0",
     "isstream"        : "0.1.2",
     "json-stringify-safe": "5.0.1",
+    "mime-types"      : "2.1.7",
     "deep-copy"       : "1.1.0",
     "@http/headers"   : "0.1.0",
     "@http/length"    : "0.1.0"
