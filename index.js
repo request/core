@@ -21,4 +21,7 @@ function request (_options) {
 
 module.exports = request
 request.Request = Request
-request._lib = require('./lib')
+
+if (process.env.CORE_LIB) {
+  request._lib = require('./lib')
+}
