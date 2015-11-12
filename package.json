@@ -36,7 +36,16 @@
     "istanbul"        : "0.3.22",
     "coveralls"       : "2.11.4",
     "codecov.io"      : "0.1.6",
-    "eslint"          : "1.6.0"
+    "eslint"          : "1.6.0",
+
+    "http-auth"       : "2.2.8",
+    "hawk"            : "4.0.0",
+    "http-signature"  : "1.0.2",
+    "oauth-sign"      : "0.8.0",
+    "aws-sign2"       : "0.6.0",
+    "formidable"      : "1.0.17",
+    "tough-cookie"    : "2.2.0",
+    "iconv-lite"      : "0.4.13"
   },
 
   "main": "index.js",
@@ -47,6 +56,6 @@
     "test"      : "npm run lint && npm run test-ci",
     "test-ci"   : "mocha --recursive test/",
     "test-cov"  : "istanbul cover _mocha test/",
-    "lint"      : "eslint && echo Lint passed"
+    "lint"      : "eslint . && echo Lint passed"
   }
 }
