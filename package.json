@@ -1,12 +1,13 @@
 {
   "name": "@http/core",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "HTTP Client Library",
 
   "keywords": [
     "http",
     "https",
-    "client"
+    "client",
+    "request"
   ],
 
   "license": "Apache-2.0",
@@ -20,23 +21,19 @@
   },
 
   "dependencies": {
+    "@http/headers"   : "0.1.0",
+    "@http/length"    : "0.1.0",
     "@http/qs"        : "0.1.0",
+    "deep-copy"       : "1.1.0",
+    "mime-types"      : "2.1.7",
     "bl"              : "1.0.0",
     "isstream"        : "0.1.2",
-    "json-stringify-safe": "5.0.1",
-    "mime-types"      : "2.1.7",
-    "deep-copy"       : "1.1.0",
-    "@http/headers"   : "0.1.0",
-    "@http/length"    : "0.1.0"
+    "json-stringify-safe": "5.0.1"
   },
 
   "devDependencies": {
     "mocha"           : "2.3.3",
     "should"          : "7.1.0",
-    "istanbul"        : "0.3.22",
-    "coveralls"       : "2.11.4",
-    "codecov.io"      : "0.1.6",
-    "eslint"          : "1.6.0",
 
     "http-auth"       : "2.2.8",
     "hawk"            : "4.0.0",
@@ -50,7 +47,13 @@
 
   "main": "index.js",
 
-  "files": [],
+  "files": [
+    "config/",
+    "lib/",
+    "LICENSE",
+    "README.md",
+    "index.js"
+  ],
 
   "scripts": {
     "test"      : "npm run lint && npm run test-ci",
