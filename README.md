@@ -1,25 +1,18 @@
 
-# @http/core
+# @request/core
 
-Duplex Streams2 HTTP client. By default it behaves identically to Node's Core [http.request][node-http-request] method.
+HTTP Duplex Streams2 client. By default it behaves identically to Node's Core [http.request][node-http-request] method.
 
 Each additional feature must be enabled explicitly via option. Some options requires additional dependencies.
-
-
-## Table of Contents
-
-- **[Options][options]**
-- **[DEBUG Logger][options]**
-- **[Events][options]**
 
 
 ---
 
 
-## Options
+# Options
 
 
-### URL
+## URL
 
 #### url/uri
   - `String`
@@ -29,7 +22,7 @@ Each additional feature must be enabled explicitly via option. Some options requ
   - `Object`
   - `String`
 
-### Body
+## Body
 
 #### form
   - `Object`
@@ -44,7 +37,7 @@ Each additional feature must be enabled explicitly via option. Some options requ
   - `String`
   - `Array`
 
-#### multipart - requires [@http/multipart][http-multipart]
+#### multipart - requires [@request/multipart][request-multipart]
 
 Pass `Object` for `multipart/form-data` body:
 
@@ -85,20 +78,20 @@ The `body` key is required and reserved for setting up the item's body. It can b
 Additionally you can set `preambleCRLF` and/or `postambleCRLF` to `true`.
 
 
-### Authentication
+## Authentication
 
-#### auth - digest auth requires [@http/digest][http-digest]
+#### auth - digest auth requires [@request/digest][request-digest]
 - `{user: '', pass: '', sendImmediately: false}`
   - Sets the `Authorization: Basic ...` header.
   - The `sendImmediately` option default to `true` if omitted.
   - The `sendImmediately: false` options requires the [redirect option][redirect-option] to be enabled.
-  - Digest authentication requires the [@http/digest][http-digest] module.
+  - Digest authentication requires the [@request/digest][request-digest] module.
 - `{bearer: '', sendImmediately: false}`
   - Alternatively the `Authorization: Bearer ...` header can be set if using the `bearer` option.
   - The rules for the `sendImmediately` option from above applies here.
 
 
-#### oauth - requires [@http/oauth][http-oauth]
+#### oauth - requires [@request/oauth][request-oauth]
 
 #### hawk - requires [hawk][hawk]
 
@@ -107,7 +100,7 @@ Additionally you can set `preambleCRLF` and/or `postambleCRLF` to `true`.
 #### aws - requires [aws-sign2][aws-sign2]
 
 
-### Modifiers
+## Modifiers
 
 #### gzip
 - `gzip: true`
@@ -124,7 +117,7 @@ Additionally you can set `preambleCRLF` and/or `postambleCRLF` to `true`.
   - Set `encoding` to `'binary'` when expecting binary response.
 
 
-### Misc
+## Misc
 
 #### cookie - requires [tough-cookie][tough-cookie]
   - `true`
@@ -196,7 +189,7 @@ Additionally you can set `preambleCRLF` and/or `postambleCRLF` to `true`.
 ---
 
 
-## HTTPDuplex
+# HTTPDuplex
 
 ###### Private Flags and State
 
@@ -222,7 +215,7 @@ Additionally you can set `preambleCRLF` and/or `postambleCRLF` to `true`.
 
 ---
 
-## Request
+# Request
 
 ## Methods
 
@@ -235,13 +228,13 @@ Additionally you can set `preambleCRLF` and/or `postambleCRLF` to `true`.
 - **onresponse** res - internal event to execute options response logic
 - **redirect** res
 - **response** res
-- **options** emit [@http/core][http-core] options
+- **options** emit [@request/core][request-core] options
 - **body** emit raw response body, either `Buffer` or `String` (the `callback` option is required)
 - **json** emit parsed JSON response body (the `callback` and the `parse:{json:true}` options are required)
 
 ## req/res
 
-- **headers** is instance of the [@http/headers][http-headers] module
+- **headers** is instance of the [@request/headers][request-headers] module
 
 
 ---
@@ -261,12 +254,12 @@ Additionally you can set `preambleCRLF` and/or `postambleCRLF` to `true`.
 
 ## Logger
 
-Requires [@http/log][http-log]
+Requires [@request/log][request-log]
 
 - **req** prints out the request `method`, `url`, and `headers`
 - **res** prints out the response `statusCode`, `statusMessage`, and `headers`
 - **http** prints out the options object passed to the underlying `http.request` method
-- **raw** prints out the raw `@http/core` options object right before sending the request
+- **raw** prints out the raw `@request/core` options object right before sending the request
 - **body** prints out the raw request and response bodies (the response body is available only when the `callback` option is being used)
 - **json** prints out the parsed JSON response body (only if the response body is a JSON one, and if the `callback` and `parse.json` options are being used)
 
@@ -305,11 +298,11 @@ This module may contain code snippets initially implemented in [request][request
   [http-signature]: https://github.com/joyent/node-http-signature
   [tunnel-agent]: https://github.com/mikeal/tunnel-agent
 
-  [http-core]: https://github.com/node-http/core
-  [http-headers]: https://github.com/node-http/headers
-  [http-digest]: https://github.com/node-http/digest
-  [http-oauth]: https://github.com/node-http/oauth
-  [http-multipart]: https://github.com/node-http/multipart
-  [http-log]: https://github.com/node-http/log
+  [request-core]: https://github.com/request/core
+  [request-headers]: https://github.com/request/headers
+  [request-digest]: https://github.com/request/digest
+  [request-oauth]: https://github.com/request/oauth
+  [request-multipart]: https://github.com/request/multipart
+  [request-log]: https://github.com/request/log
 
   [redirect-option]: #redirect

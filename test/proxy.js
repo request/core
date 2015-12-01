@@ -4,7 +4,7 @@ var fs = require('fs')
   , http = require('http')
 var should = require('should')
   , debug = require('debug')
-var request = require('@http/client')
+var request = require('@request/client')
 
 console.server = debug('server')
 console.client = debug('client')

@@ -4,7 +4,7 @@ var http = require('http')
 var should = require('should')
   , debug = require('debug')
   , iconv = require('iconv-lite')
-var request = require('@http/client')
+var request = require('@request/client')
 
 console.server = debug('server')
 console.client = debug('client')

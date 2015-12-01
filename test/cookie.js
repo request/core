@@ -5,7 +5,7 @@ var fs = require('fs')
 var should = require('should')
   , debug = require('debug')
   , tough = require('tough-cookie')
-var request = require('@http/client')
+var request = require('@request/client')
 
 console.server = debug('server')
 console.client = debug('client')
