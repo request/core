@@ -22,28 +22,31 @@
   },
 
   "dependencies": {
-    "@request/headers": "0.1.0",
-    "@request/length": "0.1.0",
-    "@request/qs": "0.1.0",
-    "deep-copy": "1.1.0",
-    "mime-types": "2.1.7",
-    "bl": "1.0.0",
-    "isstream": "0.1.2",
-    "json-stringify-safe": "5.0.1"
+    "@request/headers": "~0.1.0",
+    "@request/length": "~0.1.0",
+    "@request/qs": "~0.1.0",
+    "deep-copy": "~1.1.0",
+    "mime-types": "~2.1.7",
+    "bl": "~1.0.0",
+    "isstream": "~0.1.2",
+    "json-stringify-safe": "~5.0.1"
   },
 
   "devDependencies": {
-    "mocha": "2.3.3",
-    "should": "7.1.0",
-    "@request/digest": "0.1.0",
-    "http-auth": "2.2.8",
-    "hawk": "4.0.0",
-    "http-signature": "1.0.2",
-    "oauth-sign": "0.8.0",
-    "aws-sign2": "0.6.0",
-    "formidable": "1.0.17",
-    "tough-cookie": "2.2.0",
-    "iconv-lite": "0.4.13"
+    "mocha": "^2.3.3",
+    "should": "^7.1.0",
+    "@request/client": "^0.1.0",
+    "@request/digest": "^0.1.0",
+    "@request/multipart": "^0.1.0",
+    "@request/oauth": "^0.1.0",
+    "http-auth": "^2.2.8",
+    "hawk": "^4.0.0",
+    "http-signature": "^1.0.2",
+    "oauth-sign": "^0.8.0",
+    "aws-sign2": "^0.6.0",
+    "formidable": "^1.0.17",
+    "tough-cookie": "^2.2.0",
+    "iconv-lite": "^0.4.13"
   },
 
   "main": "index.js",
